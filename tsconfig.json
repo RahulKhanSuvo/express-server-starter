@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "target": "ESNext",
+    "module": "Preserve",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "types": ["bun"],
+    "strict": true,
+    "rootDir": "./src",
+    "outDir": "dist"
+  },
+  "include": ["src", "prisma.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}
