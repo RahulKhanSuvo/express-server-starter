@@ -13,7 +13,8 @@
     "deploy": "prisma migrate deploy",
     "studio": "prisma studio",
     "reset": "prisma migrate reset",
-    "push": "prisma db push"
+    "push": "prisma db push",
+    "pull": "prisma db pull"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.2",
