@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import { AppRoutes } from "./app/routes";
 import { systemLogs } from "./app/middleware/syslemLogs";
+import globalErrorHandler from "./app/middleware/globalErrorHandler";
 
 const app: Application = express();
 app.use(express.urlencoded({ extended: true }));
@@ -12,4 +13,5 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 app.use("/api/v1", AppRoutes);
+app.use(globalErrorHandler);
 export default app;
