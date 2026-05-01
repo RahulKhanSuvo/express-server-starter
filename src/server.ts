@@ -1,12 +1,13 @@
-import app from "./app"
+import app from "./app";
+import envConfig from "./config/env";
 
 const bootstrap = () => {
-    try {
-        app.listen(process.env.PORT, () => {
-            console.log(`server is running on the ${process.env.PORT}`)
-        })
-    } catch (error) {
-        console.log(error)
-    }
-}
-bootstrap()
+  try {
+    app.listen(envConfig.PORT, () => {
+      console.log(`server is running on the ${envConfig.PORT}`);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+bootstrap();

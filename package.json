@@ -41,7 +41,8 @@
     "express": "^5.2.1",
     "http-status": "^2.1.0",
     "pg": "^8.20.0",
-    "typescript-eslint": "^8.59.0"
+    "typescript-eslint": "^8.59.0",
+    "zod": "^4.4.1"
   },
   "lint-staged": {
     "src/**/*.{ts,js}": [
