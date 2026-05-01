@@ -1,12 +1,11 @@
 import express, { Application, Request, Response } from "express";
 import { AppRoutes } from "./app/routes";
-import { systemLogs } from "./app/middleware/syslemLogs";
 import globalErrorHandler from "./app/middleware/globalErrorHandler";
-
+import morgan from "morgan";
 const app: Application = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(systemLogs);
+app.use(morgan("dev"));
 app.get("/", (req: Request, res: Response) => {
   res.json({
     message: "Hello World",
