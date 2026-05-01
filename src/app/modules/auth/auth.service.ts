@@ -42,7 +42,11 @@ const registerPatient = async (payload: {
         id: data.user.id,
       },
     });
-    throw new Error("Failed to create patient account", { cause: error });
+    throw createHttpError(
+      status.INTERNAL_SERVER_ERROR,
+      "Failed to create patient account",
+      { cause: error },
+    );
   }
 };
 
