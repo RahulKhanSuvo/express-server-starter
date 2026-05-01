@@ -17,21 +17,30 @@ const registerPatient = async (payload: {
     },
   });
   if (!data.user) throw new Error("Failed to create patient account");
-  const patient = await prisma.$transaction(async (tx) => {
-    const createdPatient = await tx.patient.create({
-      data: {
-        userId: data.user.id,
-        name,
-        email,
+  try {
+    const patient = await prisma.$transaction(async (tx) => {
+      const createdPatient = await tx.patient.create({
+        data: {
+          userId: data.user.id,
+          name,
+          email,
+        },
+      });
+      return createdPatient;
+    });
+    const result = {
+      ...data.user,
+      patient,
+    };
+    return result;
+  } catch (error) {
+    await prisma.user.delete({
+      where: {
+        id: data.user.id,
       },
     });
-    return createdPatient;
-  });
-  const result = {
-    ...data.user,
-    patient,
-  };
-  return result;
+    throw new Error("Failed to create patient account", { cause: error });
+  }
 };
 
 const loginUser = async (payload: { email: string; password: string }) => {
