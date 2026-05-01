@@ -1,5 +1,7 @@
+import createHttpError from "http-errors";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
+import status from "http-status";
 
 const registerPatient = async (payload: {
   name: string;
@@ -16,7 +18,8 @@ const registerPatient = async (payload: {
       password,
     },
   });
-  if (!data.user) throw new Error("Failed to create patient account");
+  if (!data.user)
+    throw createHttpError(status.INTERNAL_SERVER_ERROR, "fail to crate user");
   try {
     const patient = await prisma.$transaction(async (tx) => {
       const createdPatient = await tx.patient.create({
