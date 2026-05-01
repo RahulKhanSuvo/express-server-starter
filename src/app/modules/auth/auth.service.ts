@@ -28,7 +28,7 @@ const registerPatient = async (payload: {
     return createdPatient;
   });
   const result = {
-    ...data,
+    ...data.user,
     patient,
   };
   return result;
