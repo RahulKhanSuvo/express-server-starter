@@ -6,7 +6,7 @@ import globalErrorHandler from "./app/middleware/globalErrorHandler";
 const app: Application = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-systemLogs(app);
+app.use(systemLogs);
 app.get("/", (req: Request, res: Response) => {
   res.json({
     message: "Hello World",
