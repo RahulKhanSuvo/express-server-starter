@@ -13,5 +13,6 @@ model Patient {
     user          User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@index([isDeleted], name: "idx_patient_isDeleted")
+    @@index([userId], name: "idx_patient_userId")
     @@map("patient")
 }
