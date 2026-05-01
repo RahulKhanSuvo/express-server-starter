@@ -29,6 +29,8 @@ const loginUser = async (payload: { email: string; password: string }) => {
     },
   });
   if (!data.user) throw new Error("Failed to login user");
+  if (data.user.isDeleted) throw new Error("User is deleted");
+  if (data.user.status === "BLOCKED") throw new Error("User is Blocked");
 
   return data;
 };
