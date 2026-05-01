@@ -19,6 +19,21 @@ const registerPatient = async (payload: {
   return data;
 };
 
+const loginUser = async (payload: { email: string; password: string }) => {
+  const { email, password } = payload;
+
+  const data = await auth.api.signInEmail({
+    body: {
+      email,
+      password,
+    },
+  });
+  if (!data.user) throw new Error("Failed to login user");
+
+  return data;
+};
+
 export const AuthService = {
   registerPatient,
+  loginUser,
 };
