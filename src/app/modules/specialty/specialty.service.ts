@@ -7,7 +7,11 @@ const createSpecialty = async (payload: Specialty): Promise<Specialty> => {
   });
   return result;
 };
-
+const getAllSpecialty = async () => {
+  const result = await prisma.specialty.findMany();
+  return result;
+};
 export const SpecialtyService = {
   createSpecialty,
+  getAllSpecialty,
 };
