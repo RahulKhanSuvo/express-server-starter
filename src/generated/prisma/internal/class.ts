@@ -19,7 +19,7 @@ const config: runtime.GetPrismaClientConfig = {
   engineVersion: "3c6e192761c0362d496ed980de936e2f3cebcd3a",
   activeProvider: "postgresql",
   inlineSchema:
-    'generator client {\n  provider = "prisma-client"\n  output   = "../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nmodel Specialty {\n  id          String    @id @default(uuid(7))\n  title       String    @unique @db.VarChar(100)\n  description String?   @db.Text\n  icon        String?\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime  @updatedAt\n  isDeleted   Boolean   @default(false)\n  deletedAt   DateTime?\n\n  @@index([isDeleted], name: "idx_specialty_isDeleted")\n  @@index([title])\n  @@map("Specialty")\n}\n',
+    'generator client {\n  provider = "prisma-client"\n  output   = "../../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nmodel Specialty {\n  id          String    @id @default(uuid(7))\n  title       String    @unique @db.VarChar(100)\n  description String?   @db.Text\n  icon        String?\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime  @updatedAt\n  isDeleted   Boolean   @default(false)\n  deletedAt   DateTime?\n\n  @@index([isDeleted], name: "idx_specialty_isDeleted")\n  @@index([title])\n  @@map("Specialty")\n}\n',
   runtimeDataModel: {
     models: {},
     enums: {},
