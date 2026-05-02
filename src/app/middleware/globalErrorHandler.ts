@@ -4,6 +4,7 @@ import status from "http-status";
 import z from "zod";
 import envConfig from "../../config/env";
 import { TErrorResponse, TErrorSources } from "../interfaces/error.interface";
+import { handleZodError } from "../errorsHelpers/handelZodError";
 
 const globalErrorHandler = (
   err: Error,
@@ -16,22 +17,25 @@ const globalErrorHandler = (
   }
   let statusCode: number = status.INTERNAL_SERVER_ERROR;
   let message: string = err.message || "Internal Server Error";
-  const errorSources: TErrorSources[] = [];
+  let errorSources: TErrorSources[] = [];
+  let stack: string | undefined;
+
   if (err instanceof z.ZodError) {
-    statusCode = status.BAD_REQUEST;
-    message = "Validation Error";
-    err.issues.forEach((issue) => {
-      errorSources.push({
-        path: issue.path.join(".") || "Unknown Path",
-        message: issue.message,
-      });
-    });
+    const simplifiedError = handleZodError(err);
+    statusCode = simplifiedError.statusCode!;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources;
+    stack = err.stack;
+  } else if (err instanceof Error) {
+    statusCode = status.INTERNAL_SERVER_ERROR;
+    message = err.message;
+    stack = err.stack;
   }
   const errorResponse: TErrorResponse = {
     success: false,
     message,
     errorSources,
-    error: envConfig.NODE_ENV === "development" ? err.message : null,
+    stack: envConfig.NODE_ENV === "development" ? err.stack : null,
   };
   res.status(statusCode).json(errorResponse);
 };

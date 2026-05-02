@@ -3,8 +3,10 @@ export interface TErrorSources {
   message: string;
 }
 export interface TErrorResponse {
+  statusCode?: number;
   success: boolean;
   message: string;
   errorSources: TErrorSources[];
   error?: string | null;
+  stack?: string | null;
 }
