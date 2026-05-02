@@ -2,10 +2,8 @@
 import { Request, Response, NextFunction } from "express";
 import status from "http-status";
 import z from "zod";
-interface TErrorSources {
-  path: string;
-  message: string;
-}
+import envConfig from "../../config/env";
+import { TErrorResponse, TErrorSources } from "../interfaces/error.interface";
 
 const globalErrorHandler = (
   err: Error,
@@ -13,7 +11,7 @@ const globalErrorHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  if (process.env.NODE_ENV === "development") {
+  if (envConfig.NODE_ENV === "development") {
     console.error(err);
   }
   let statusCode: number = status.INTERNAL_SERVER_ERROR;
@@ -29,11 +27,13 @@ const globalErrorHandler = (
       });
     });
   }
-  res.status(statusCode).json({
+  const errorResponse: TErrorResponse = {
     success: false,
     message,
     errorSources,
-  });
+    error: envConfig.NODE_ENV === "development" ? err.message : null,
+  };
+  res.status(statusCode).json(errorResponse);
 };
 
 export default globalErrorHandler;
