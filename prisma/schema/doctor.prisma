@@ -10,7 +10,7 @@ model Doctor {
     gender              Gender
     appointmentFee      Float
     qualification       String?           @db.VarChar(100)
-    cureentWorkingPlace String
+    currentWorkingPlace String
     designation         String            @db.VarChar(100)
     averageRating       Float?            @default(0.0)
     isDeleted           Boolean           @default(false)
