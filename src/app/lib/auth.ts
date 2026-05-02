@@ -46,6 +46,12 @@ export const auth = betterAuth({
     updateAge: Number(
       ms(Number(envConfig.BATTER_AUTH_SESSION_TOKEN_UPDATA_AGE)),
     ),
+    cookieCache: {
+      enabled: true,
+      maxAge: Number(
+        ms(Number(envConfig.BATTER_AUTH_SESSION_TOKEN_UPDATA_AGE)),
+      ),
+    },
   },
   // trustedOrigins: [process.env.TRUSTED_ORIGINS || "http://localhost:5000"],
   // advanced: {
