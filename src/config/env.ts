@@ -17,6 +17,7 @@ if (!parsedEnv.success) {
   throw new AppError(
     status.INTERNAL_SERVER_ERROR,
     "Invalid environment variables",
+    parsedEnv.error,
   );
 }
 const envConfig = parsedEnv.data;
