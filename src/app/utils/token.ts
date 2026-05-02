@@ -44,7 +44,7 @@ const setRefreshTokenOnCookie = (res: Response, token: string) => {
     maxAge: Number(ms(Number(envConfig.REFRESH_TOKEN_EXPIRE_IN))),
   });
 };
-const batterAuthSessionOnCookie = (res: Response, token: string) => {
+const setBatterAuthSessionOnCookie = (res: Response, token: string) => {
   CookieUtils.setACookie(res, "batter_auth_session_token", token, {
     httpOnly: true,
     secure: false,
@@ -58,5 +58,5 @@ export const TokenUtils = {
   getRefreshToken,
   setAccessTokenOnCookie,
   setRefreshTokenOnCookie,
-  batterAuthSessionOnCookie,
+  setBatterAuthSessionOnCookie,
 };
