@@ -3,6 +3,7 @@ import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
 import status from "http-status";
 import AppError from "../../errorsHelpers/AppError";
+import { TokenUtils } from "../../utils/token";
 
 const registerPatient = async (payload: {
   name: string;
@@ -67,7 +68,30 @@ const loginUser = async (payload: { email: string; password: string }) => {
   if (data.user.status === "BLOCKED")
     throw new AppError(status.INTERNAL_SERVER_ERROR, "User is Blocked");
 
-  return data;
+  const accessToken = TokenUtils.getAccessToken({
+    id: data.user.id,
+    role: data.user.role,
+    name: data.user.name,
+    email: data.user.email,
+    status: data.user.status,
+    isDeleted: data.user.isDeleted,
+  });
+
+  const refreshToken = TokenUtils.getRefreshToken({
+    id: data.user.id,
+    role: data.user.role,
+    name: data.user.name,
+    email: data.user.email,
+    status: data.user.status,
+    isDeleted: data.user.isDeleted,
+  });
+
+  const result = {
+    user: data.user,
+    accessToken,
+    refreshToken,
+  };
+  return result;
 };
 
 export const AuthService = {
