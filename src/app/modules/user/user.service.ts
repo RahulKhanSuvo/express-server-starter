@@ -4,6 +4,8 @@ import { prisma } from "../../lib/prisma";
 
 import { auth } from "../../lib/auth";
 import { CreateDoctorType } from "./userInterface";
+import AppError from "../../errorsHelpers/AppError";
+import status from "http-status";
 
 const createDoctor = async (payload: CreateDoctorType) => {
   const specialties: Specialty[] = [];
@@ -14,7 +16,10 @@ const createDoctor = async (payload: CreateDoctorType) => {
       },
     });
     if (!specialty) {
-      throw createHttpError(404, `specialty not found ${specialtyId}`);
+      throw new AppError(
+        status.NOT_FOUND,
+        `specialty not found ${specialtyId}`,
+      );
     }
     specialties.push(specialty);
   }
@@ -24,8 +29,8 @@ const createDoctor = async (payload: CreateDoctorType) => {
     },
   });
   if (userExists) {
-    throw createHttpError(
-      409,
+    throw new AppError(
+      status.INTERNAL_SERVER_ERROR,
       `user with email ${payload.doctor.email} already exists`,
     );
   }
@@ -110,7 +115,11 @@ const createDoctor = async (payload: CreateDoctorType) => {
         id: userData.user.id,
       },
     });
-    throw createHttpError(500, "Failed to create doctor", { cause: error });
+    throw new AppError(
+      status.INTERNAL_SERVER_ERROR,
+      "Failed to create doctor",
+      { cause: error },
+    );
   }
 };
 

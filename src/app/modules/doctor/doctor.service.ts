@@ -1,5 +1,6 @@
-import createHttpError from "http-errors";
 import { prisma } from "../../lib/prisma";
+import AppError from "../../errorsHelpers/AppError";
+import status from "http-status";
 
 const getAllDoctors = async () => {
   const doctor = await prisma.doctor.findMany({
@@ -17,7 +18,7 @@ const getDoctorById = async (id: string) => {
     },
   });
   if (!doctor) {
-    throw createHttpError(404, `Doctor not found`);
+    throw new AppError(status.NOT_FOUND, `Doctor not found`);
   }
   return doctor;
 };
