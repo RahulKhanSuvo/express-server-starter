@@ -13,6 +13,7 @@ const globalErrorHandler = (
   }
   const statusCode = status.INTERNAL_SERVER_ERROR;
   const message = err.message || "Internal Server Error";
+  const errorSources = [];
   res.status(statusCode).json({
     success: false,
     message,
