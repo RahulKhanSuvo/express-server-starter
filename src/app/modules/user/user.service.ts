@@ -1,10 +1,11 @@
 import createHttpError from "http-errors";
 import { Role, Specialty } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
-import { CreateDoctor } from "./userInteface";
-import { auth } from "../../lib/auth";
 
-const createDoctor = async (payload: CreateDoctor) => {
+import { auth } from "../../lib/auth";
+import { CreateDoctorType } from "./userInterface";
+
+const createDoctor = async (payload: CreateDoctorType) => {
   const specialties: Specialty[] = [];
   for (const specialtyId of payload.specialties) {
     const specialty = await prisma.specialty.findUnique({
