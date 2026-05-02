@@ -13,7 +13,8 @@ const globalErrorHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  if (envConfig.NODE_ENV === "development") {
+  const isDev = envConfig.NODE_ENV === "development";
+  if (isDev) {
     console.error(err);
   }
   let statusCode: number = status.INTERNAL_SERVER_ERROR;
@@ -40,7 +41,7 @@ const globalErrorHandler = (
     success: false,
     message,
     errorSources,
-    stack: envConfig.NODE_ENV === "development" ? err.stack : null,
+    ...(isDev && { stack: err.stack }),
   };
   res.status(statusCode).json(errorResponse);
 };
