@@ -30,16 +30,27 @@ const setAccessTokenOnCookie = (res: Response, token: string) => {
   CookieUtils.setACookie(res, "accessToken", token, {
     httpOnly: true,
     secure: false,
-    sameSite: "strict",
-    maxAge: 60 * 60 * 24 * 7,
+    sameSite: "none",
+    path: "/",
+    maxAge: Number(ms(Number(envConfig.ACCESS_TOKEN_EXPIRE_IN))),
   });
 };
 const setRefreshTokenOnCookie = (res: Response, token: string) => {
   CookieUtils.setACookie(res, "refreshToken", token, {
     httpOnly: true,
     secure: false,
-    sameSite: "strict",
-    maxAge: ms("1d"),
+    sameSite: "none",
+    path: "/",
+    maxAge: Number(ms(Number(envConfig.REFRESH_TOKEN_EXPIRE_IN))),
+  });
+};
+const batterAuthSessionOnCookie = (res: Response, token: string) => {
+  CookieUtils.setACookie(res, "batter_auth_session_token", token, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "none",
+    path: "/",
+    maxAge: Number(ms(Number(envConfig.BATTER_AUTH_SESSION_EXPIRE_IN))),
   });
 };
 export const TokenUtils = {
@@ -47,4 +58,5 @@ export const TokenUtils = {
   getRefreshToken,
   setAccessTokenOnCookie,
   setRefreshTokenOnCookie,
+  batterAuthSessionOnCookie,
 };

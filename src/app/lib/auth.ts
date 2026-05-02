@@ -2,6 +2,8 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { Role, userStatus } from "../../generated/prisma/client";
 import { prisma } from "./prisma";
+import ms from "ms";
+import envConfig from "../../config/env";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -38,6 +40,12 @@ export const auth = betterAuth({
         defaultValue: null,
       },
     },
+  },
+  session: {
+    expiresIn: Number(ms(Number(envConfig.BATTER_AUTH_SESSION_EXPIRE_IN))),
+    updateAge: Number(
+      ms(Number(envConfig.BATTER_AUTH_SESSION_TOKEN_UPDATA_AGE)),
+    ),
   },
   // trustedOrigins: [process.env.TRUSTED_ORIGINS || "http://localhost:5000"],
   // advanced: {

@@ -13,6 +13,8 @@ const envSchema = z.object({
   REFRESH_TOKEN_SECRET: z.string(),
   ACCESS_TOKEN_EXPIRE_IN: z.string().default("1d"),
   REFRESH_TOKEN_EXPIRE_IN: z.string().default("7d"),
+  BATTER_AUTH_SESSION_EXPIRE_IN: z.string().default("7d"),
+  BATTER_AUTH_SESSION_TOKEN_UPDATA_AGE: z.string().default("1d"),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
