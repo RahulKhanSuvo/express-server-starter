@@ -7,6 +7,6 @@ const router = express.Router();
 
 router.use("/auth", authRoutes);
 router.use("/specialty", SpecialtyRoutes);
-router.use("/doctors", UserRoutes);
+router.use("/users", UserRoutes);
 
 export const AppRoutes = router;
