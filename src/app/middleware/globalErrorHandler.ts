@@ -5,6 +5,7 @@ import z from "zod";
 import envConfig from "../../config/env";
 import { TErrorResponse, TErrorSources } from "../interfaces/error.interface";
 import { handleZodError } from "../errorsHelpers/handelZodError";
+import AppError from "../errorsHelpers/AppError";
 
 const globalErrorHandler = (
   err: Error,
@@ -25,6 +26,10 @@ const globalErrorHandler = (
     statusCode = simplifiedError.statusCode!;
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources;
+    stack = err.stack;
+  } else if (err instanceof AppError) {
+    statusCode = err.statusCode;
+    message = err.message;
     stack = err.stack;
   } else if (err instanceof Error) {
     statusCode = status.INTERNAL_SERVER_ERROR;
