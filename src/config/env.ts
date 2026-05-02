@@ -9,6 +9,10 @@ const envSchema = z.object({
   DATABASE_URL: z.string(),
   BETTER_AUTH_SECRET: z.string(),
   BETTER_AUTH_URL: z.string(),
+  ACCESS_TOKEN_SECRET: z.string(),
+  REFRESH_TOKEN_SECRET: z.string(),
+  ACCESS_TOKEN_EXPIRE_IN: z.string().default("1d"),
+  REFRESH_TOKEN_EXPIRE_IN: z.string().default("7d"),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
