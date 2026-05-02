@@ -7,9 +7,9 @@ import { catchAsync } from "../../../shared/catchAsync";
 const createDoctor = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.createDoctor(req.body);
   sendResponse(res, {
-    statusCode: StatusCodes.OK,
+    statusCode: StatusCodes.CREATED,
     success: true,
-    message: "User created successfully",
+    message: "Doctor created successfully",
     data: result,
   });
 });
