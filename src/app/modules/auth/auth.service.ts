@@ -87,7 +87,7 @@ const loginUser = async (payload: { email: string; password: string }) => {
   });
 
   const result = {
-    user: data.user,
+    ...data,
     accessToken,
     refreshToken,
   };
