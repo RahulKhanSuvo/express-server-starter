@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import { status } from "http-status";
 
@@ -10,5 +11,5 @@ export const notFoundHandler = (
     success: false,
     message: `${req.originalUrl} Not Found`,
   });
-  next();
+  // next();
 };
