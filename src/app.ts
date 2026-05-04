@@ -3,9 +3,11 @@ import { AppRoutes } from "./app/routes";
 import globalErrorHandler from "./app/middleware/globalErrorHandler";
 import morgan from "morgan";
 import { notFoundHandler } from "./app/middleware/notFound";
+import cookieParser from "cookie-parser";
 const app: Application = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(morgan("dev"));
 app.get("/", (req: Request, res: Response) => {
   res.json({
