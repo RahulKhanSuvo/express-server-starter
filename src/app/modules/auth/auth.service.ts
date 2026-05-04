@@ -33,9 +33,30 @@ const registerPatient = async (payload: {
       });
       return createdPatient;
     });
+    const accessToken = TokenUtils.getAccessToken({
+      id: data.user.id,
+      role: data.user.role,
+      name: data.user.name,
+      email: data.user.email,
+      status: data.user.status,
+      isDeleted: data.user.isDeleted,
+    });
+
+    const refreshToken = TokenUtils.getRefreshToken({
+      id: data.user.id,
+      role: data.user.role,
+      name: data.user.name,
+      email: data.user.email,
+      status: data.user.status,
+      isDeleted: data.user.isDeleted,
+    });
+
     const result = {
       ...data.user,
-      patient,
+      ...patient,
+      accessToken,
+      refreshToken,
+      token: data.token,
     };
     return result;
   } catch (error) {
