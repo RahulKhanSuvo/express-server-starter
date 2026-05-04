@@ -26,7 +26,7 @@ const globalErrorHandler = (
     const simplifiedError = handleZodError(err);
     statusCode = simplifiedError.statusCode!;
     message = simplifiedError.message;
-    errorSources = simplifiedError.errorSources;
+    errorSources = simplifiedError?.errorSources || [];
     stack = err.stack;
   } else if (err instanceof AppError) {
     statusCode = err.statusCode;
@@ -40,7 +40,7 @@ const globalErrorHandler = (
   const errorResponse: TErrorResponse = {
     success: false,
     message,
-    errorSources,
+    ...(errorSources.length > 0 && { errorSources }),
     ...(isDev && { stack: err.stack }),
   };
   res.status(statusCode).json(errorResponse);
