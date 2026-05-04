@@ -3,7 +3,7 @@ import { JwtPayload, SignOptions } from "jsonwebtoken";
 import { JwtUtils } from "./jwt";
 import envConfig from "../../config/env";
 import { CookieUtils } from "./cookies";
-import ms from "ms";
+import ms, { StringValue } from "ms";
 
 const getAccessToken = (payload: JwtPayload) => {
   const accessToken = JwtUtils.createToken(
@@ -32,7 +32,7 @@ const setAccessTokenOnCookie = (res: Response, token: string) => {
     secure: false,
     sameSite: "none",
     path: "/",
-    maxAge: Number(ms(Number(envConfig.ACCESS_TOKEN_EXPIRE_IN))),
+    maxAge: ms(envConfig.ACCESS_TOKEN_EXPIRE_IN as StringValue),
   });
 };
 const setRefreshTokenOnCookie = (res: Response, token: string) => {
@@ -41,7 +41,7 @@ const setRefreshTokenOnCookie = (res: Response, token: string) => {
     secure: false,
     sameSite: "none",
     path: "/",
-    maxAge: Number(ms(Number(envConfig.REFRESH_TOKEN_EXPIRE_IN))),
+    maxAge: ms(envConfig.REFRESH_TOKEN_EXPIRE_IN as StringValue),
   });
 };
 const setBatterAuthSessionOnCookie = (res: Response, token: string) => {
@@ -50,7 +50,7 @@ const setBatterAuthSessionOnCookie = (res: Response, token: string) => {
     secure: false,
     sameSite: "none",
     path: "/",
-    maxAge: Number(ms(Number(envConfig.BATTER_AUTH_SESSION_EXPIRE_IN))),
+    maxAge: ms(envConfig.BATTER_AUTH_SESSION_EXPIRE_IN as StringValue),
   });
 };
 export const TokenUtils = {
