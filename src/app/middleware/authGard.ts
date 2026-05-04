@@ -62,6 +62,7 @@ export const AuthGard =
               );
             }
           }
+          return next();
         }
       }
     } catch (error) {
