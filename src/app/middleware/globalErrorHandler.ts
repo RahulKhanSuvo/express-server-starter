@@ -26,7 +26,7 @@ const globalErrorHandler = (
     const simplifiedError = handleZodError(err);
     statusCode = simplifiedError.statusCode!;
     message = simplifiedError.message;
-    errorSources = simplifiedError?.errorSources || [];
+    errorSources = simplifiedError.errorSources || [];
     stack = err.stack;
   } else if (err instanceof AppError) {
     statusCode = err.statusCode;
