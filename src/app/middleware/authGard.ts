@@ -4,6 +4,8 @@ import { CookieUtils } from "../utils/cookies";
 import AppError from "../errorsHelpers/AppError";
 import status from "http-status";
 import { prisma } from "../lib/prisma";
+import { JwtUtils } from "../utils/jwt";
+import envConfig from "../../config/env";
 
 export const AuthGard =
   (...authRoles: Role[]) =>
@@ -62,7 +64,31 @@ export const AuthGard =
               );
             }
           }
-          return next();
+          const accessToken = CookieUtils.getACookie(req, "accessToken");
+          if (!accessToken)
+            throw new AppError(
+              status.UNAUTHORIZED,
+              "Unauthorized access No access token provided",
+            );
+          const verifyToken = JwtUtils.verifyToken(
+            accessToken,
+            envConfig.ACCESS_TOKEN_SECRET,
+          );
+          if (!verifyToken.success) {
+            throw new AppError(
+              status.UNAUTHORIZED,
+              "Unauthorized access Invalid access token",
+            );
+          }
+          if (
+            authRoles.length > 0 &&
+            !authRoles.includes(verifyToken.data!.role as Role)
+          ) {
+            throw new AppError(
+              status.FORBIDDEN,
+              "You do not have permission to access this resource",
+            );
+          }
         }
       }
     } catch (error) {
