@@ -7,7 +7,7 @@ const bootstrap = () => {
       console.log(`server is running on the ${envConfig.PORT}`);
     });
   } catch (error) {
-    console.log("Error starting server:", error);
+    console.error("Error starting server:", error);
   }
 };
 bootstrap();
