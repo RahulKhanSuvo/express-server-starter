@@ -63,6 +63,12 @@ export const AuthGard =
                 "You do not have permission to access this resource",
               );
             }
+            req.user = {
+              role: user.role,
+              userId: user.id,
+              email: user.email,
+              name: user.name,
+            };
           }
           const accessToken = CookieUtils.getACookie(req, "accessToken");
           if (!accessToken)
@@ -89,12 +95,7 @@ export const AuthGard =
               "You do not have permission to access this resource",
             );
           }
-          req.user = {
-            role: user.role,
-            userId: user.id,
-            email: user.email,
-            name: user.name,
-          };
+
           next();
         }
       }
