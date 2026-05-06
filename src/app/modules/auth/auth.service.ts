@@ -339,6 +339,11 @@ const resetPassword = async (payload: {
   if (!result) {
     throw new AppError(status.BAD_REQUEST, "Failed to reset password");
   }
+  await prisma.session.deleteMany({
+    where: {
+      userId: user.id,
+    },
+  });
   return result;
 };
 
