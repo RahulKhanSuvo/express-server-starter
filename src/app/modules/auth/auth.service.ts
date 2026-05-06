@@ -215,6 +215,7 @@ const changePassword = async (
   if (!result) {
     throw new AppError(status.BAD_REQUEST, "Failed to change password");
   }
+
   return result;
 };
 export const AuthService = {
