@@ -74,6 +74,7 @@ export const auth = betterAuth({
           });
         }
       },
+      expiresIn: ms("2m"),
     }),
   ],
   session: {
