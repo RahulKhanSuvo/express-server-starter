@@ -15,7 +15,9 @@ if (envConfig.NODE_ENV === "development") {
 app.get("/", (req: Request, res: Response) => {
   res.json({
     message: "Hello World",
-    environment: envConfig.NODE_ENV,
+    ...(envConfig.NODE_ENV !== "production" && {
+      environment: envConfig.NODE_ENV,
+    }),
   });
 });
 app.use("/api/v1", AppRoutes);
