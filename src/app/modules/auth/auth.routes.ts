@@ -5,5 +5,6 @@ const router = Router();
 
 router.post("/register", AuthController.registerPatient);
 router.post("/login", AuthController.loginUser);
+router.get("/me");
 
 export const authRoutes = router;

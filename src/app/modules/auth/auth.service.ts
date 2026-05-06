@@ -114,8 +114,24 @@ const loginUser = async (payload: { email: string; password: string }) => {
   };
   return result;
 };
-
+const getMe = async (payload: { userId: string }) => {
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      id: payload.userId,
+    },
+    include: {
+      patient: true,
+      doctors: true,
+    },
+  });
+  if (!isUserExist) throw new AppError(status.UNAUTHORIZED, "User not found");
+  const result = {
+    ...isUserExist,
+  };
+  return result;
+};
 export const AuthService = {
   registerPatient,
   loginUser,
+  getMe,
 };
