@@ -3,7 +3,7 @@ import z from "zod";
 const loginSchema = z.object({
   email: z.email("invalid Email"),
   password: z.string().min(6, "Password must be at least 6 characters long"),
-  role: z.enum(["ADMIN", "SUPER_ADMIN", "DOCTOR", "PATIENT"]),
+  role: z.enum(["ADMIN", "SUPER_ADMIN", "DOCTOR", "PATIENT"]).optional(),
 });
 
 const authSignUpSchema = z.object({
