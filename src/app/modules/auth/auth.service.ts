@@ -212,6 +212,7 @@ const changePassword = async (
       Authorization: `Bearer ${sessionToken}`,
     }),
   });
+
   if (!result) {
     throw new AppError(status.BAD_REQUEST, "Failed to change password");
   }
