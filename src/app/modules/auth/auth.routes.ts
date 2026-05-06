@@ -2,6 +2,8 @@ import { Router } from "express";
 import { AuthController } from "./auth.controller";
 import { AuthGard } from "../../middleware/authGard";
 import { Role } from "../../../generated/prisma/enums";
+import { validateRequest } from "../../middleware/validateRequest";
+import { authSchema } from "./auth.interface";
 
 const router = Router();
 
@@ -16,6 +18,7 @@ router.post("/refresh-token", AuthController.newToken);
 router.post(
   "/change-password",
   AuthGard(Role.ADMIN, Role.SUPER_ADMIN, Role.DOCTOR, Role.PATIENT),
+  validateRequest(authSchema.changePasswordSchema),
   AuthController.changePassword,
 );
 export const authRoutes = router;
