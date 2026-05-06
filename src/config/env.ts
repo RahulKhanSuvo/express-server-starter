@@ -17,6 +17,11 @@ const envSchema = z.object({
   REFRESH_TOKEN_EXPIRE_IN: z.string().default("7d"),
   BATTER_AUTH_SESSION_EXPIRE_IN: z.string().default("7d"),
   BATTER_AUTH_SESSION_TOKEN_UPDATA_AGE: z.string().default("1d"),
+  EMAIL_SENDER_SMTP_USER: z.string(),
+  EMAIL_SENDER_SMTP_PASS: z.string(),
+  EMAIL_SENDER_SMTP_HOST: z.string(),
+  EMAIL_SENDER_SMTP_PORT: z.coerce.number().default(465),
+  EMAIL_SENDER_SMTP_FROM: z.string(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
