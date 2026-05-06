@@ -9,6 +9,7 @@ import envConfig from "../../../config/env";
 import { JwtPayload } from "jsonwebtoken";
 import ms, { StringValue } from "ms";
 import { IChangePassword, ILogin } from "./auth.interface";
+import { userStatus } from "../../../generated/prisma/enums";
 
 const registerPatient = async (payload: {
   name: string;
@@ -274,6 +275,37 @@ const verifyEmail = async (payload: { email: string; otp: string }) => {
   }
   return result;
 };
+const forgetPassword = async (payload: { email: string }) => {
+  const { email } = payload;
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (!user) {
+    throw new AppError(status.NOT_FOUND, "User not found");
+  }
+  if (
+    !user.emailVerified ||
+    user.status === userStatus.DELETED ||
+    user.isDeleted === true
+  ) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "Email not verified or user is blocked or user is deleted",
+    );
+  }
+  const result = await auth.api.requestPasswordResetEmailOTP({
+    body: {
+      email: user.email,
+    },
+  });
+  if (!result) {
+    throw new AppError(status.BAD_REQUEST, "Failed to request password reset");
+  }
+  return result;
+};
+
 export const AuthService = {
   registerPatient,
   loginUser,
@@ -282,4 +314,5 @@ export const AuthService = {
   changePassword,
   logoutUser,
   verifyEmail,
+  forgetPassword,
 };
