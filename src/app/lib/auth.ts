@@ -8,6 +8,8 @@ import { bearer, emailOTP } from "better-auth/plugins";
 import { EmailUtils } from "../utils/email";
 
 export const auth = betterAuth({
+  baseURL: envConfig.BETTER_AUTH_URL,
+  secret: envConfig.BETTER_AUTH_SECRET,
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
