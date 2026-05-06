@@ -65,7 +65,7 @@ const newToken = catchAsync(async (req, res) => {
   TokenUtils.setRefreshTokenOnCookie(res, refreshToken);
   TokenUtils.setBatterAuthSessionOnCookie(res, sessionToken);
   sendResponse(res, {
-    statusCode: httpStatus.OK,
+    statusCode: httpStatus.CREATED,
     success: true,
     message: "New token generated successfully",
     data: {
