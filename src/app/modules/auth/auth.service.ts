@@ -305,6 +305,42 @@ const forgetPassword = async (payload: { email: string }) => {
   }
   return result;
 };
+const resetPassword = async (payload: {
+  email: string;
+  otp: string;
+  password: string;
+}) => {
+  const { email, otp, password } = payload;
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (!user) {
+    throw new AppError(status.NOT_FOUND, "User not found");
+  }
+  if (
+    !user.emailVerified ||
+    user.status === userStatus.DELETED ||
+    user.isDeleted === true
+  ) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      "Email not verified or user is blocked or user is deleted",
+    );
+  }
+  const result = await auth.api.resetPasswordEmailOTP({
+    body: {
+      email,
+      otp,
+      password,
+    },
+  });
+  if (!result) {
+    throw new AppError(status.BAD_REQUEST, "Failed to reset password");
+  }
+  return result;
+};
 
 export const AuthService = {
   registerPatient,
@@ -315,4 +351,5 @@ export const AuthService = {
   logoutUser,
   verifyEmail,
   forgetPassword,
+  resetPassword,
 };
