@@ -74,9 +74,23 @@ const newToken = catchAsync(async (req, res) => {
     },
   });
 });
+const changePassword = catchAsync(async (req, res) => {
+  const sessionToken = req.cookies.batter_auth_session_token;
+  if (!sessionToken)
+    throw new AppError(status.BAD_REQUEST, "Session token is required");
+  const result = await AuthService.changePassword(req.body, sessionToken);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Password changed successfully",
+    data: result,
+  });
+});
+
 export const AuthController = {
   registerPatient,
   loginUser,
   getMe,
   newToken,
+  changePassword,
 };

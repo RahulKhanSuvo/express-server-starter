@@ -8,7 +8,7 @@ import { JwtUtils } from "../../utils/jwt";
 import envConfig from "../../../config/env";
 import { JwtPayload } from "jsonwebtoken";
 import ms, { StringValue } from "ms";
-import { IChangePassword } from "./auth.interface";
+import { IChangePassword, ILogin } from "./auth.interface";
 
 const registerPatient = async (payload: {
   name: string;
@@ -78,7 +78,7 @@ const registerPatient = async (payload: {
   }
 };
 
-const loginUser = async (payload: { email: string; password: string }) => {
+const loginUser = async (payload: ILogin) => {
   const { email, password } = payload;
 
   const data = await auth.api.signInEmail({
@@ -189,19 +189,32 @@ const newToken = async (refreshToken: string, sessionToken: string) => {
   };
   return result;
 };
-const changePassword = async (payload: IChangePassword, userId: string) => {
-  const isUserExist = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
+const changePassword = async (
+  payload: IChangePassword,
+  sessionToken: string,
+) => {
+  const session = await auth.api.getSession({
+    headers: new Headers({
+      Authorization: `Bearer ${sessionToken}`,
+    }),
   });
-  if (!isUserExist) throw new AppError(status.UNAUTHORIZED, "User not found");
+  if (!session) {
+    throw new AppError(status.UNAUTHORIZED, "Invalid Session");
+  }
+
   const result = await auth.api.changePassword({
     body: {
       currentPassword: payload.currentPassword,
       newPassword: payload.newPassword,
+      revokeOtherSessions: true,
     },
+    headers: new Headers({
+      Authorization: `Bearer ${sessionToken}`,
+    }),
   });
+  if (!result) {
+    throw new AppError(status.BAD_REQUEST, "Failed to change password");
+  }
   return result;
 };
 export const AuthService = {
