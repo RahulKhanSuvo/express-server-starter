@@ -4,6 +4,9 @@ import { prisma } from "../../lib/prisma";
 import status from "http-status";
 import AppError from "../../errorsHelpers/AppError";
 import { TokenUtils } from "../../utils/token";
+import { JwtUtils } from "../../utils/jwt";
+import envConfig from "../../../config/env";
+import { JwtPayload } from "jsonwebtoken";
 
 const registerPatient = async (payload: {
   name: string;
@@ -130,8 +133,48 @@ const getMe = async (payload: { userId: string }) => {
   };
   return result;
 };
+const newToken = async (refreshToken: string, sessionToken: string) => {
+  const verifyToken = JwtUtils.verifyToken(
+    refreshToken,
+    envConfig.REFRESH_TOKEN_SECRET,
+  );
+  if (!verifyToken.success && verifyToken.error)
+    throw new AppError(status.UNAUTHORIZED, "Invalid refresh token");
+  const data = verifyToken.data as JwtPayload;
+  const newAccessToken = TokenUtils.getAccessToken({
+    id: data.id,
+    role: data.role,
+    name: data.name,
+    email: data.email,
+    status: data.status,
+    isDeleted: data.isDeleted,
+  });
+  const isSessionExist = await prisma.session.findUnique({
+    where: {
+      id: sessionToken,
+      userId: data.id,
+    },
+  });
+  if (!isSessionExist)
+    throw new AppError(status.UNAUTHORIZED, "Session not found");
+  const newRefreshToken = TokenUtils.getRefreshToken({
+    id: data.id,
+    role: data.role,
+    name: data.name,
+    email: data.email,
+    status: data.status,
+    isDeleted: data.isDeleted,
+  });
+  const result = {
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
+    sessionToken,
+  };
+  return result;
+};
 export const AuthService = {
   registerPatient,
   loginUser,
   getMe,
+  newToken,
 };
