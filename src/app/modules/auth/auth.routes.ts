@@ -7,7 +7,11 @@ import { authSchema } from "./auth.interface";
 
 const router = Router();
 
-router.post("/register", AuthController.registerPatient);
+router.post(
+  "/register",
+  validateRequest(authSchema.authSignUpSchema),
+  AuthController.registerPatient,
+);
 router.post(
   "/login",
   validateRequest(authSchema.loginSchema),
