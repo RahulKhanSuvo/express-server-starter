@@ -15,6 +15,13 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: true,
   },
+  socialProviders: {
+    google: {
+      enabled: true,
+      clientId: envConfig.GOOGLE_CLIENT_ID,
+      clientSecret: envConfig.GOOGLE_CLIENT_SECRET,
+    },
+  },
   emailVerification: {
     sendOnSignUp: true,
     sendOnSignIn: true,
