@@ -109,6 +109,15 @@ const logoutUser = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const verifyEmail = catchAsync(async (req, res) => {
+  const result = await AuthService.verifyEmail(req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Email verified successfully",
+    data: result,
+  });
+});
 export const AuthController = {
   registerPatient,
   loginUser,
@@ -116,4 +125,5 @@ export const AuthController = {
   newToken,
   changePassword,
   logoutUser,
+  verifyEmail,
 };

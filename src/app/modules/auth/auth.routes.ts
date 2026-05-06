@@ -34,4 +34,9 @@ router.post(
   AuthGard(Role.ADMIN, Role.SUPER_ADMIN, Role.DOCTOR, Role.PATIENT),
   AuthController.logoutUser,
 );
+router.post(
+  "/verify-email",
+  validateRequest(authSchema.verifyEmailSchema),
+  AuthController.verifyEmail,
+);
 export const authRoutes = router;
