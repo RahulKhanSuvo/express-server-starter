@@ -8,10 +8,11 @@ const app: Application = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(morgan("dev"));
+if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 app.get("/", (req: Request, res: Response) => {
   res.json({
     message: "Hello World",
+    environment: process.env.NODE_ENV,
   });
 });
 app.use("/api/v1", AppRoutes);
