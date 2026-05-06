@@ -7,6 +7,7 @@ import { TokenUtils } from "../../utils/token";
 import { JwtUtils } from "../../utils/jwt";
 import envConfig from "../../../config/env";
 import { JwtPayload } from "jsonwebtoken";
+import ms, { StringValue } from "ms";
 
 const registerPatient = async (payload: {
   name: string;
@@ -134,6 +135,17 @@ const getMe = async (payload: { userId: string }) => {
   return result;
 };
 const newToken = async (refreshToken: string, sessionToken: string) => {
+  const isSessionValid = await prisma.session.findUnique({
+    where: {
+      token: sessionToken,
+      expiresAt: {
+        gt: new Date(),
+      },
+    },
+    include: { user: true },
+  });
+  if (!isSessionValid)
+    throw new AppError(status.UNAUTHORIZED, "Invalid Session");
   const verifyToken = JwtUtils.verifyToken(
     refreshToken,
     envConfig.REFRESH_TOKEN_SECRET,
@@ -149,14 +161,6 @@ const newToken = async (refreshToken: string, sessionToken: string) => {
     status: data.status,
     isDeleted: data.isDeleted,
   });
-  const isSessionExist = await prisma.session.findUnique({
-    where: {
-      id: sessionToken,
-      userId: data.id,
-    },
-  });
-  if (!isSessionExist)
-    throw new AppError(status.UNAUTHORIZED, "Session not found");
   const newRefreshToken = TokenUtils.getRefreshToken({
     id: data.id,
     role: data.role,
@@ -165,10 +169,22 @@ const newToken = async (refreshToken: string, sessionToken: string) => {
     status: data.status,
     isDeleted: data.isDeleted,
   });
+  const { token } = await prisma.session.update({
+    where: {
+      token: sessionToken,
+    },
+    data: {
+      token: sessionToken,
+      expiresAt: new Date(
+        Date.now() + ms(envConfig.BATTER_AUTH_SESSION_EXPIRE_IN as StringValue),
+      ),
+      updatedAt: new Date(),
+    },
+  });
   const result = {
     accessToken: newAccessToken,
     refreshToken: newRefreshToken,
-    sessionToken,
+    sessionToken: token,
   };
   return result;
 };
