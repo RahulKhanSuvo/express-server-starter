@@ -50,6 +50,7 @@ const sendEmail = async ({
         contentType: attachment.contentType,
       })),
     });
+    console.log("Email sent successfully", info);
     return info;
   } catch (error) {
     console.error("❌ Error while sending email", error);
