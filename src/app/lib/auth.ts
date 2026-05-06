@@ -127,8 +127,28 @@ export const auth = betterAuth({
         ) / 1000,
     },
   },
+
   // trustedOrigins: [process.env.TRUSTED_ORIGINS || "http://localhost:5000"],
-  // advanced: {
-  //   disableCSRFCheck: true,
-  // },
+  advanced: {
+    // disableCSRFCheck: true,
+    useSecureCookies: false,
+    cookies: {
+      state: {
+        attributes: {
+          sameSite: "none",
+          secure: true,
+          httpOnly: true,
+          path: "/",
+        },
+      },
+      sessionToken: {
+        attributes: {
+          sameSite: "none",
+          secure: true,
+          httpOnly: true,
+          path: "/",
+        },
+      },
+    },
+  },
 });
