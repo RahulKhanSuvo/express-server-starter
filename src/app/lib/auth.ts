@@ -92,7 +92,7 @@ export const auth = betterAuth({
           });
         }
       },
-      expiresIn: ms("2m"),
+      expiresIn: ms("10m"),
     }),
   ],
   session: {
