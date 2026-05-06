@@ -115,7 +115,6 @@ const loginUser = async (payload: { email: string; password: string }) => {
   return result;
 };
 const getMe = async (payload: { userId: string }) => {
-  console.log(payload);
   const isUserExist = await prisma.user.findUnique({
     where: {
       id: payload.userId,
