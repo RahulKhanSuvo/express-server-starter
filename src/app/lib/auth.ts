@@ -20,6 +20,16 @@ export const auth = betterAuth({
       enabled: true,
       clientId: envConfig.GOOGLE_CLIENT_ID,
       clientSecret: envConfig.GOOGLE_CLIENT_SECRET,
+      mapProfileToUser: () => {
+        return {
+          role: Role.PATIENT,
+          status: userStatus.ACTIVE,
+          needPasswordChange: true,
+          emailVerified: true,
+          isDeleted: false,
+          deletedAt: null,
+        };
+      },
     },
   },
   emailVerification: {
