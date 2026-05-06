@@ -1,8 +1,9 @@
 import { catchAsync } from "../../../shared/catchAsync";
 import { AuthService } from "./auth.service";
-import httpStatus from "http-status";
+import httpStatus, { status } from "http-status";
 import { sendResponse } from "../../../shared/sendResponse";
 import { TokenUtils } from "../../utils/token";
+import AppError from "../../errorsHelpers/AppError";
 
 const registerPatient = catchAsync(async (req, res) => {
   const result = await AuthService.registerPatient(req.body);
@@ -49,8 +50,33 @@ const getMe = catchAsync(async (req, res) => {
   });
 });
 
+const newToken = catchAsync(async (req, res) => {
+  const oldRefreshToken = req.cookies.refreshToken;
+  const oldSessionToken = req.cookies.batter_auth_session_token;
+  if (!oldRefreshToken || !oldSessionToken)
+    throw new AppError(
+      status.BAD_REQUEST,
+      "Session token and refresh token are required",
+    );
+  const result = await AuthService.newToken(oldRefreshToken, oldSessionToken);
+
+  const { accessToken, refreshToken, sessionToken } = result;
+  TokenUtils.setAccessTokenOnCookie(res, accessToken);
+  TokenUtils.setRefreshTokenOnCookie(res, refreshToken);
+  TokenUtils.setBatterAuthSessionOnCookie(res, sessionToken);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "New token generated successfully",
+    data: {
+      accessToken,
+      refreshToken,
+    },
+  });
+});
 export const AuthController = {
   registerPatient,
   loginUser,
   getMe,
+  newToken,
 };
