@@ -4,7 +4,8 @@ import { Role, userStatus } from "../../generated/prisma/client";
 import { prisma } from "./prisma";
 import ms, { StringValue } from "ms";
 import envConfig from "../../config/env";
-import { bearer } from "better-auth/plugins";
+import { bearer, emailOTP } from "better-auth/plugins";
+import { EmailUtils } from "../utils/email";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -48,7 +49,33 @@ export const auth = betterAuth({
       },
     },
   },
-  plugins: [bearer()],
+  plugins: [
+    bearer(),
+    emailOTP({
+      overrideDefaultEmailVerification: true,
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "email-verification") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email,
+            },
+          });
+          if (!user) {
+            throw new Error("User not found");
+          }
+          await EmailUtils.sendEmail({
+            to: email,
+            subject: "Email Verification",
+            templateName: "otp",
+            templateData: {
+              name: user.name,
+              otp,
+            },
+          });
+        }
+      },
+    }),
+  ],
   session: {
     expiresIn:
       Number(ms(envConfig.BATTER_AUTH_SESSION_EXPIRE_IN as StringValue)) / 1000,
