@@ -8,7 +8,11 @@ import { authSchema } from "./auth.interface";
 const router = Router();
 
 router.post("/register", AuthController.registerPatient);
-router.post("/login", AuthController.loginUser);
+router.post(
+  "/login",
+  validateRequest(authSchema.loginSchema),
+  AuthController.loginUser,
+);
 router.get(
   "/me",
   AuthGard(Role.ADMIN, Role.SUPER_ADMIN, Role.DOCTOR, Role.PATIENT),
