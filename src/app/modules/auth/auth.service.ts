@@ -262,7 +262,7 @@ const verifyEmail = async (payload: { email: string; otp: string }) => {
   if (!result) {
     throw new AppError(status.BAD_REQUEST, "Failed to verify email");
   }
-  if (result.user) {
+  if (result.status && !result.user?.emailVerified) {
     await prisma.user.update({
       where: {
         email,
