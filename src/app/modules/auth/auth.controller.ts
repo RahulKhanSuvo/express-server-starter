@@ -4,6 +4,7 @@ import httpStatus, { status } from "http-status";
 import { sendResponse } from "../../../shared/sendResponse";
 import { TokenUtils } from "../../utils/token";
 import AppError from "../../errorsHelpers/AppError";
+import { CookieUtils } from "../../utils/cookies";
 
 const registerPatient = catchAsync(async (req, res) => {
   const result = await AuthService.registerPatient(req.body);
@@ -93,11 +94,26 @@ const changePassword = catchAsync(async (req, res) => {
     },
   });
 });
-
+const logoutUser = catchAsync(async (req, res) => {
+  const sessionToken = req.cookies.batter_auth_session_token;
+  if (!sessionToken)
+    throw new AppError(status.BAD_REQUEST, "Session token is required");
+  const result = await AuthService.logoutUser(sessionToken);
+  CookieUtils.deleteACookie(res, "accessToken");
+  CookieUtils.deleteACookie(res, "refreshToken");
+  CookieUtils.deleteACookie(res, "batter_auth_session_token");
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User logged out successfully",
+    data: result,
+  });
+});
 export const AuthController = {
   registerPatient,
   loginUser,
   getMe,
   newToken,
   changePassword,
+  logoutUser,
 };

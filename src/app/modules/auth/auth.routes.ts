@@ -29,4 +29,9 @@ router.post(
   validateRequest(authSchema.changePasswordSchema),
   AuthController.changePassword,
 );
+router.post(
+  "/logout",
+  AuthGard(Role.ADMIN, Role.SUPER_ADMIN, Role.DOCTOR, Role.PATIENT),
+  AuthController.logoutUser,
+);
 export const authRoutes = router;
