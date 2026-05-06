@@ -8,6 +8,7 @@ import { JwtUtils } from "../../utils/jwt";
 import envConfig from "../../../config/env";
 import { JwtPayload } from "jsonwebtoken";
 import ms, { StringValue } from "ms";
+import { IChangePassword } from "./auth.interface";
 
 const registerPatient = async (payload: {
   name: string;
@@ -188,9 +189,25 @@ const newToken = async (refreshToken: string, sessionToken: string) => {
   };
   return result;
 };
+const changePassword = async (payload: IChangePassword, userId: string) => {
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+  if (!isUserExist) throw new AppError(status.UNAUTHORIZED, "User not found");
+  const result = await auth.api.changePassword({
+    body: {
+      currentPassword: payload.currentPassword,
+      newPassword: payload.newPassword,
+    },
+  });
+  return result;
+};
 export const AuthService = {
   registerPatient,
   loginUser,
   getMe,
   newToken,
+  changePassword,
 };
