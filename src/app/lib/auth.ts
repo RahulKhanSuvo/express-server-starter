@@ -72,6 +72,24 @@ export const auth = betterAuth({
               otp,
             },
           });
+        } else if (type === "forget-password") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email,
+            },
+          });
+          if (!user) {
+            throw new Error("User not found");
+          }
+          await EmailUtils.sendEmail({
+            to: email,
+            subject: "Forget Password",
+            templateName: "forgetPassword",
+            templateData: {
+              name: user.name,
+              otp,
+            },
+          });
         }
       },
       expiresIn: ms("2m"),
