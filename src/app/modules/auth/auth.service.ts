@@ -213,11 +213,32 @@ const changePassword = async (
     }),
   });
 
+  const accessToken = TokenUtils.getAccessToken({
+    id: session.user.id,
+    role: session.user.role,
+    name: session.user.name,
+    email: session.user.email,
+    status: session.user.status,
+    isDeleted: session.user.isDeleted,
+  });
+
+  const refreshToken = TokenUtils.getRefreshToken({
+    id: session.user.id,
+    role: session.user.role,
+    name: session.user.name,
+    email: session.user.email,
+    status: session.user.status,
+    isDeleted: session.user.isDeleted,
+  });
   if (!result) {
     throw new AppError(status.BAD_REQUEST, "Failed to change password");
   }
 
-  return result;
+  return {
+    accessToken,
+    refreshToken,
+    sessionToken: result.token,
+  };
 };
 export const AuthService = {
   registerPatient,

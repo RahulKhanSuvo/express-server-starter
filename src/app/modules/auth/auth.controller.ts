@@ -79,11 +79,18 @@ const changePassword = catchAsync(async (req, res) => {
   if (!sessionToken)
     throw new AppError(status.BAD_REQUEST, "Session token is required");
   const result = await AuthService.changePassword(req.body, sessionToken);
+  const { accessToken, refreshToken, sessionToken: token } = result;
+  TokenUtils.setAccessTokenOnCookie(res, accessToken);
+  TokenUtils.setRefreshTokenOnCookie(res, refreshToken);
+  TokenUtils.setBatterAuthSessionOnCookie(res, token!);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Password changed successfully",
-    data: result,
+    data: {
+      accessToken,
+      refreshToken,
+    },
   });
 });
 
