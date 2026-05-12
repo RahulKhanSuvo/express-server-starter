@@ -22,7 +22,8 @@ const storage = new CloudinaryStorage({
     const folder = fileExtension === "pdf" ? "Reports" : "Images";
     return {
       folder: `healthCare/${folder}`,
-      public_id: `${fileWithoutExtension}-${uniqueName}.${fileExtension}`,
+      public_id: `${fileWithoutExtension}-${uniqueName}}`,
+      resource_type: "auto",
     };
   },
 });
