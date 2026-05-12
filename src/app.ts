@@ -8,9 +8,18 @@ import envConfig from "./config/env";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./app/lib/auth";
 import path from "node:path";
+import cors from "cors";
 const app: Application = express();
+
 app.set("view engine", "ejs");
 app.set("views", path.resolve(process.cwd(), "src/app/templates"));
+// cors
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  }),
+);
 app.use("/api/auth", toNodeHandler(auth));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
