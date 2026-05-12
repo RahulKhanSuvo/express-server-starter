@@ -150,7 +150,7 @@ const googleLogin = catchAsync(async (req, res) => {
 });
 const googleLoginSuccess = catchAsync(async (req, res) => {
   const redirectPath = (req.query.redirect as string) || "/";
-  const sessionToken = req.cookies["batter_auth_session_token"];
+  const sessionToken = req.cookies["better-auth.session_token"];
   if (!sessionToken) {
     return res.redirect(
       `${envConfig.FRONTEND_URL}/login?error=${encodeURIComponent("Failed to login")}`,
@@ -158,7 +158,7 @@ const googleLoginSuccess = catchAsync(async (req, res) => {
   }
   const session = await auth.api.getSession({
     headers: {
-      Cookie: `batter_auth_session_token=${sessionToken}`,
+      Cookie: `better-auth.session_token=${sessionToken}`,
     },
   });
   if (!session || !session.user) {

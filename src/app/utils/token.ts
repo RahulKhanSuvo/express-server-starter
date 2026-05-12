@@ -29,8 +29,8 @@ const getRefreshToken = (payload: JwtPayload) => {
 const setAccessTokenOnCookie = (res: Response, token: string) => {
   CookieUtils.setACookie(res, "accessToken", token, {
     httpOnly: true,
-    secure: false,
-    sameSite: "none",
+    secure: envConfig.NODE_ENV === "production",
+    sameSite: envConfig.NODE_ENV === "production" ? "none" : "lax",
     path: "/",
     maxAge: ms(envConfig.ACCESS_TOKEN_EXPIRE_IN as StringValue),
   });
@@ -38,8 +38,8 @@ const setAccessTokenOnCookie = (res: Response, token: string) => {
 const setRefreshTokenOnCookie = (res: Response, token: string) => {
   CookieUtils.setACookie(res, "refreshToken", token, {
     httpOnly: true,
-    secure: false,
-    sameSite: "none",
+    secure: envConfig.NODE_ENV === "production",
+    sameSite: envConfig.NODE_ENV === "production" ? "none" : "lax",
     path: "/",
     maxAge: ms(envConfig.REFRESH_TOKEN_EXPIRE_IN as StringValue),
   });
@@ -47,8 +47,8 @@ const setRefreshTokenOnCookie = (res: Response, token: string) => {
 const setBatterAuthSessionOnCookie = (res: Response, token: string) => {
   CookieUtils.setACookie(res, "batter_auth_session_token", token, {
     httpOnly: true,
-    secure: false,
-    sameSite: "none",
+    secure: envConfig.NODE_ENV === "production",
+    sameSite: envConfig.NODE_ENV === "production" ? "none" : "lax",
     path: "/",
     maxAge: ms(envConfig.BATTER_AUTH_SESSION_EXPIRE_IN as StringValue),
   });
