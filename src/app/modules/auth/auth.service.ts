@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import createHttpError from "http-errors";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
@@ -346,7 +347,45 @@ const resetPassword = async (payload: {
   });
   return result;
 };
+const googleLoginSuccess = async (session: Record<string, any>) => {
+  const isPatientExist = await prisma.patient.findUnique({
+    where: {
+      userId: session.user.id,
+    },
+  });
+  if (!isPatientExist) {
+    await prisma.patient.create({
+      data: {
+        userId: session.user.id,
+        email: session.user.email,
+        name: session.user.name,
+      },
+    });
+  }
+  const accessToken = TokenUtils.getAccessToken({
+    id: session.user.id,
+    role: session.user.role,
+    name: session.user.name,
+    email: session.user.email,
+    status: session.user.status,
+    isDeleted: session.user.isDeleted,
+  });
 
+  const refreshToken = TokenUtils.getRefreshToken({
+    id: session.user.id,
+    role: session.user.role,
+    name: session.user.name,
+    email: session.user.email,
+    status: session.user.status,
+    isDeleted: session.user.isDeleted,
+  });
+
+  const result = {
+    accessToken,
+    refreshToken,
+  };
+  return result;
+};
 export const AuthService = {
   registerPatient,
   loginUser,
@@ -357,4 +396,5 @@ export const AuthService = {
   verifyEmail,
   forgetPassword,
   resetPassword,
+  googleLoginSuccess,
 };

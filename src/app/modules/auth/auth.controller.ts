@@ -5,6 +5,8 @@ import { sendResponse } from "../../../shared/sendResponse";
 import { TokenUtils } from "../../utils/token";
 import AppError from "../../errorsHelpers/AppError";
 import { CookieUtils } from "../../utils/cookies";
+import envConfig from "../../../config/env";
+import { auth } from "../../lib/auth";
 
 const registerPatient = catchAsync(async (req, res) => {
   const result = await AuthService.registerPatient(req.body);
@@ -136,6 +138,49 @@ const resetPassword = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+const googleLogin = catchAsync(async (req, res) => {
+  const redirectPath = (req.query.redirect as string) || "/dashboard";
+  const encodedRedirectPath = encodeURIComponent(redirectPath);
+  const callbackUrl = `${envConfig.BETTER_AUTH_URL}/api/v1/auth/google/success?redirect=${encodedRedirectPath}`;
+  res.render("googleRedirect", {
+    betterAuthUrl: envConfig.BETTER_AUTH_URL,
+    callbackUrl,
+  });
+});
+const googleLoginSuccess = catchAsync(async (req, res) => {
+  const redirectPath = (req.query.redirect as string) || "/dashboard";
+  const sessionToken = req.cookies["batter_auth.session_token"];
+  if (!sessionToken) {
+    return res.redirect(
+      `${envConfig.FRONTEND_URL}/login?error=${encodeURIComponent("Failed to login")}`,
+    );
+  }
+  const session = await auth.api.getSession({
+    headers: {
+      Cookie: `batter_auth.session_token=${sessionToken}`,
+    },
+  });
+  if (!session || !session.user) {
+    return res.redirect(
+      `${envConfig.FRONTEND_URL}/login?error=${encodeURIComponent("Failed to login")}`,
+    );
+  }
+  const result = await AuthService.googleLoginSuccess(session);
+  const { accessToken, refreshToken } = result;
+  TokenUtils.setAccessTokenOnCookie(res, accessToken);
+  TokenUtils.setRefreshTokenOnCookie(res, refreshToken);
+  const isValidRedirectPath =
+    redirectPath.startsWith("/") && !redirectPath.startsWith("//");
+  const finalRedirectPath = isValidRedirectPath ? redirectPath : `/dashboard`;
+  res.redirect(`${envConfig.FRONTEND_URL}${finalRedirectPath}`);
+});
+const googleLoginError = catchAsync(async (req, res) => {
+  const error = req.query.error || "oauth_failed";
+  const redirectPath = (req.query.redirect as string) || "/dashboard";
+  const finalUrl = `${envConfig.FRONTEND_URL}/login?error=${encodeURIComponent(error as string)}&redirect=${encodeURIComponent(redirectPath)}`;
+  res.redirect(finalUrl);
+});
 export const AuthController = {
   registerPatient,
   loginUser,
@@ -146,4 +191,7 @@ export const AuthController = {
   verifyEmail,
   forgetPassword,
   resetPassword,
+  googleLogin,
+  googleLoginSuccess,
+  googleLoginError,
 };
