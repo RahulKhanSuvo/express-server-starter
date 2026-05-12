@@ -14,15 +14,11 @@ const storage = new CloudinaryStorage({
       .replace(/\s/g, "_")
       .replace(/[^A-Za-z0-9_\-.]/g, "");
     const uniqueName =
-      Math.random().toString(36).substring(2, 10) +
-      "-" +
-      Date.now() +
-      "-" +
-      fileWithoutExtension;
+      Math.random().toString(36).substring(2, 10) + "-" + Date.now();
     const folder = fileExtension === "pdf" ? "Reports" : "Images";
     return {
       folder: `healthCare/${folder}`,
-      public_id: `${fileWithoutExtension}-${uniqueName}}`,
+      public_id: `${fileWithoutExtension}-${uniqueName}.${fileExtension}`,
       resource_type: "auto",
     };
   },
