@@ -138,7 +138,7 @@ export const auth = betterAuth({
       state: {
         attributes: {
           sameSite: "none",
-          secure: true,
+          secure: envConfig.NODE_ENV === "production",
           httpOnly: true,
           path: "/",
         },
@@ -146,7 +146,7 @@ export const auth = betterAuth({
       sessionToken: {
         attributes: {
           sameSite: "none",
-          secure: true,
+          secure: envConfig.NODE_ENV === "production",
           httpOnly: true,
           path: "/",
         },

@@ -45,11 +45,10 @@
                     credentials: "include",
                     body: JSON.stringify({
                         provider: "google",
-                        callbackURL: "<%=callbackUrl%>"
+                        callbackURL: "<%=callbackURL%>"
                     })
                 });
                 const data = await response.json();
-                console.log(data);
                 if (data.url) {
                     window.location.href = data.url;
                 } else {

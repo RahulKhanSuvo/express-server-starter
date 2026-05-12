@@ -142,15 +142,15 @@ const resetPassword = catchAsync(async (req, res) => {
 const googleLogin = catchAsync(async (req, res) => {
   const redirectPath = (req.query.redirect as string) || "/";
   const encodedRedirectPath = encodeURIComponent(redirectPath);
-  const callbackUrl = `${envConfig.BETTER_AUTH_URL}/api/v1/auth/google/success?redirect=${encodedRedirectPath}`;
+  const callbackURL = `${envConfig.BETTER_AUTH_URL}/api/v1/auth/google/success?redirect=${encodedRedirectPath}`;
   res.render("googleRedirect", {
     betterAuthUrl: envConfig.BETTER_AUTH_URL,
-    callbackUrl,
+    callbackURL,
   });
 });
 const googleLoginSuccess = catchAsync(async (req, res) => {
   const redirectPath = (req.query.redirect as string) || "/";
-  const sessionToken = req.cookies["better_auth.session_token"];
+  const sessionToken = req.cookies["batter_auth_session_token"];
   if (!sessionToken) {
     return res.redirect(
       `${envConfig.FRONTEND_URL}/login?error=${encodeURIComponent("Failed to login")}`,
@@ -158,7 +158,7 @@ const googleLoginSuccess = catchAsync(async (req, res) => {
   }
   const session = await auth.api.getSession({
     headers: {
-      Cookie: `better_auth.session_token=${sessionToken}`,
+      Cookie: `batter_auth_session_token=${sessionToken}`,
     },
   });
   if (!session || !session.user) {
