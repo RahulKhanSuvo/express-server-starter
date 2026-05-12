@@ -129,7 +129,12 @@ export const auth = betterAuth({
         ) / 1000,
     },
   },
-
+  // redirectURLS: {
+  //   callbackURL: envConfig.FRONTEND_URL,
+  //   authURL: envConfig.FRONTEND_URL,
+  //   signOutURL: envConfig.FRONTEND_URL,
+  //   signInURL: envConfig.FRONTEND_URL,
+  // },
   // trustedOrigins: [process.env.TRUSTED_ORIGINS || "http://localhost:5000"],
   advanced: {
     // disableCSRFCheck: true,
