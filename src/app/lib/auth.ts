@@ -135,7 +135,7 @@ export const auth = betterAuth({
   //   signOutURL: envConfig.FRONTEND_URL,
   //   signInURL: envConfig.FRONTEND_URL,
   // },
-  // trustedOrigins: [process.env.TRUSTED_ORIGINS || "http://localhost:5000"],
+  trustedOrigins: [envConfig.FRONTEND_URL, envConfig.BETTER_AUTH_URL],
   advanced: {
     // disableCSRFCheck: true,
     useSecureCookies: false,
