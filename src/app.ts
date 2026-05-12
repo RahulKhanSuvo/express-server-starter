@@ -16,7 +16,7 @@ app.set("views", path.resolve(process.cwd(), "src/app/templates"));
 // cors
 app.use(
   cors({
-    origin: [envConfig.FRONTEND_URL],
+    origin: [envConfig.FRONTEND_URL, envConfig.BETTER_AUTH_URL],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
