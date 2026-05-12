@@ -23,9 +23,11 @@ app.use(
   }),
 );
 app.use("/api/auth", toNodeHandler(auth));
-app.use(express.urlencoded({ extended: true }));
+// middleware
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+// ---------------------------------
 if (envConfig.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
@@ -37,6 +39,7 @@ app.get("/", (req: Request, res: Response) => {
     }),
   });
 });
+// ---------------------------------
 app.use("/api/v1", AppRoutes);
 app.use(globalErrorHandler);
 app.use(notFoundHandler);
