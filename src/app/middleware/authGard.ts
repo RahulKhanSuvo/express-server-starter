@@ -97,6 +97,11 @@ export const AuthGard =
           }
 
           next();
+        } else {
+          throw new AppError(
+            status.UNAUTHORIZED,
+            "Unauthorized access - Session not found or invalid",
+          );
         }
       }
     } catch (error) {

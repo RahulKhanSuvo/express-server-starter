@@ -4,12 +4,15 @@ import { catchAsync } from "../../../shared/catchAsync";
 import { sendResponse } from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 const createSpecialty = async (req: Request, res: Response) => {
-  const result = await SpecialtyService.createSpecialty(req.body);
+  // const result = await SpecialtyService.createSpecialty(req.body);
+  console.log("file", req.file);
+  console.log("body", req.body);
+
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
     message: "Specialty created successfully",
-    data: result,
+    // data: result,
   });
 };
 
