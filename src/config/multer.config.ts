@@ -14,17 +14,25 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
     const originalName = file.originalname;
-    const fileExtension = originalName.split(".").pop()?.toLowerCase();
-    const fileWithoutExtension = originalName
+    const extension = originalName.split(".").pop()?.toLocaleLowerCase();
+
+    const fileNameWithoutExtension = originalName
       .split(".")
       .slice(0, -1)
       .join(".")
       .toLowerCase()
-      .replace(/\s/g, "_")
-      .replace(/[^A-Za-z0-9_\-.]/g, "");
+      .replace(/\s+/g, "-")
+      // eslint-disable-next-line no-useless-escape
+      .replace(/[^a-z0-9\-]/g, "");
 
-    const uniqueName = `${Math.random().toString(36).substring(2)}+"-"+${Date.now()}+"-"+${fileWithoutExtension}`;
-    const folder = fileExtension === "pdf" ? "Reports" : "Images";
+    const uniqueName =
+      Math.random().toString(36).substring(2) +
+      "-" +
+      Date.now() +
+      "-" +
+      fileNameWithoutExtension;
+
+    const folder = extension === "pdf" ? "reports" : "images";
 
     return {
       folder: `healthCare/${folder}`,
