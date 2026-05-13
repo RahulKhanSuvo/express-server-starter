@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { v2 as cloudinary } from "cloudinary";
 import envConfig from "./env";
 import AppError from "../app/errorsHelpers/AppError";
@@ -11,14 +12,21 @@ cloudinary.config({
 });
 export const deleteFileFromCloudinary = async (url: string) => {
   try {
-    const regex = /\/v\d+\/(.+?)(?:\.[a-z0-9]+)?$/i;
+    const regex =
+      /\/([a-z]+)\/upload\/(?:[^\/]+\/)*v\d+\/(.+?)(?:\.[a-z0-9]+)?$/i;
     const match = url.match(regex);
-    const public_id = match![1];
+    if (match && match[1] && match[2]) {
+      const resource_type = match[1];
+      const public_id = match[2];
 
-    await cloudinary.uploader.destroy(public_id, { resource_type: "auto" });
+      await cloudinary.uploader.destroy(public_id, {
+        resource_type: resource_type,
+      });
+    }
   } catch (error) {
     console.error("Cloudinary delete error", error);
     throw new AppError(status.BAD_REQUEST, "Fail to delete file");
   }
 };
+
 export const cloudinaryUpload = cloudinary;

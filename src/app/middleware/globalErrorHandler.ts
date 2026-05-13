@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from "express";
 import status from "http-status";
@@ -32,6 +33,18 @@ const globalErrorHandler = async (
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources || [];
     stack = err.stack;
+  } else if (err.name === "PrismaClientKnownRequestError") {
+    const prismaErr = err as any;
+    if (prismaErr.code === "P2002") {
+      statusCode = status.CONFLICT;
+      message = "Unique constraint failed";
+      errorSources = [
+        {
+          path: prismaErr.meta?.target?.[0] || "",
+          message: `${prismaErr.meta?.target?.[0] || "Field"} already exists`,
+        },
+      ];
+    }
   } else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
@@ -41,6 +54,7 @@ const globalErrorHandler = async (
     message = err.message;
     stack = err.stack;
   }
+
   const errorResponse: TErrorResponse = {
     success: false,
     message,
