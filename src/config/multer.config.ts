@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import envConfig from "./env";
@@ -22,7 +23,6 @@ const storage = new CloudinaryStorage({
       .join(".")
       .toLowerCase()
       .replace(/\s+/g, "-")
-      // eslint-disable-next-line no-useless-escape
       .replace(/[^a-z0-9\-]/g, "");
 
     const uniqueName =
