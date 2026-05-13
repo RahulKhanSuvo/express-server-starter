@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from "express";
 import status from "http-status";
-import z from "zod";
+import z, { url } from "zod";
 import envConfig from "../../config/env";
 import { TErrorResponse, TErrorSources } from "../interfaces/error.interface";
 import { handleZodError } from "../errorsHelpers/handelZodError";
@@ -21,6 +21,12 @@ const globalErrorHandler = async (
   }
   if (req.file) {
     await deleteFileFromCloudinary(req.file?.path);
+  }
+  if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+    const imageUrl = req.files.map((file) => file.path);
+    await Promise.all(
+      imageUrl.map(async (url) => await deleteFileFromCloudinary(url)),
+    );
   }
   let statusCode: number = status.INTERNAL_SERVER_ERROR;
   let message: string = err.message || "Internal Server Error";
