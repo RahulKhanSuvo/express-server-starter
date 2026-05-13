@@ -6,8 +6,9 @@ import envConfig from "../../config/env";
 import { TErrorResponse, TErrorSources } from "../interfaces/error.interface";
 import { handleZodError } from "../errorsHelpers/handelZodError";
 import AppError from "../errorsHelpers/AppError";
+import { deleteFileFromCloudinary } from "../../config/cloudinary.config";
 
-const globalErrorHandler = (
+const globalErrorHandler = async (
   err: Error,
   req: Request,
   res: Response,
@@ -16,6 +17,9 @@ const globalErrorHandler = (
   const isDev = envConfig.NODE_ENV === "development";
   if (isDev) {
     console.error(err);
+  }
+  if (req.file) {
+    await deleteFileFromCloudinary(req.file?.path);
   }
   let statusCode: number = status.INTERNAL_SERVER_ERROR;
   let message: string = err.message || "Internal Server Error";
