@@ -3,7 +3,7 @@ import { SpecialtyController } from "./specialty.controller";
 import { AuthGard } from "../../middleware/authGard";
 import { Role } from "../../../generated/prisma/enums";
 import { multerUpload } from "../../../config/multer.config";
-import { SpecialtySchema } from "./spocoalty.schema";
+import { SpecialtySchema } from "./specialty.schema";
 import { validateRequest } from "../../middleware/validateRequest";
 
 const router = express.Router();
