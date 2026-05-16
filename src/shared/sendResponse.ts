@@ -34,7 +34,7 @@ export const sendResponse = <T>(
       ...(data.meta && { meta: data.meta }),
     });
   }
-  res.status(statusCode).json({
+  return res.status(statusCode).json({
     success,
     message,
     ...(data && { data }),
