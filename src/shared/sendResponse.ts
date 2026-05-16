@@ -37,6 +37,6 @@ export const sendResponse = <T>(
   res.status(statusCode).json({
     success,
     message,
-    data,
+    ...(data && { data }),
   });
 };
