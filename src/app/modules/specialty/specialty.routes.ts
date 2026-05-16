@@ -14,6 +14,10 @@ router.post(
   validateRequest(SpecialtySchema.createSpecialtySchema),
   SpecialtyController.createSpecialty,
 );
-router.get("/", AuthGard(Role.ADMIN), SpecialtyController.getAllSpecialty);
+router.get(
+  "/",
+  AuthGard(Role.ADMIN, Role.PATIENT),
+  SpecialtyController.getAllSpecialty,
+);
 
 export const SpecialtyRoutes = router;
