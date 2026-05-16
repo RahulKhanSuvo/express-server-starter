@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 export interface PrismaFindManyArgs {
   where?: Record<string, unknown>;
   include?: Record<string, unknown>;
@@ -11,73 +10,65 @@ export interface PrismaFindManyArgs {
   distinct?: string[] | string;
   [key: string]: unknown;
 }
-
 export interface PrismaCountArgs {
   where?: Record<string, unknown>;
   include?: Record<string, unknown>;
-  select?: Record<string, boolean | Record<string, unknown>>;
-  orderBy?: Record<string, unknown> | Record<string, unknown>[];
-  skip?: number;
-  take?: number;
-  cursor?: Record<string, unknown>;
-  distinct?: string[] | string;
   [key: string]: unknown;
 }
-
-export interface PrismaModelDelegate {
-  findMany(args?: any): Promise<any[]>;
-  count(args?: any): Promise<number>;
+export interface PrismaModalDelegate {
+  findMany: (args: any) => Promise<any[]>;
+  count: (args: any) => Promise<number>;
 }
-
-export interface IQueryParams {
+export interface IQueryPrams {
+  page?: number;
+  limit?: number;
   searchTerm?: string;
-  page?: string;
-  limit?: string;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
+  shortBy?: string;
+  shortOrder?: "asc" | "desc";
   fields?: string;
-  includes?: string;
-  [key: string]: string | undefined;
+  include?: string;
+  [key: string]: unknown;
 }
 
 export interface IQueryConfig {
   searchableFields?: string[];
-  filterableFields?: string[];
+  filterAbleFields?: string[];
 }
-
 export interface PrismaStringFilter {
   contains?: string;
   startsWith?: string;
   endsWith?: string;
-  mode?: "insensitive" | "default";
   equals?: string;
+  notEquals?: string;
+  mode?: "default" | "insensitive";
   in?: string[];
   notIn?: string[];
-  lt?: string;
-  lte?: string;
+  isEmpty?: boolean;
+  notEmpty?: boolean;
   gt?: string;
   gte?: string;
-  not?: PrismaStringFilter | string;
+  lt?: string;
+  lte?: string;
 }
-
 export interface PrismaNumberFilter {
   equals?: number;
+  notEquals?: number;
   in?: number[];
   notIn?: number[];
-  lt?: number;
-  lte?: number;
   gt?: number;
   gte?: number;
-  not?: PrismaNumberFilter | number;
+  lt?: number;
+  lte?: number;
+  isEmpty?: boolean;
+  notEmpty?: boolean;
+  [key: string]: unknown;
 }
-
-export interface PrismaWhereConditions {
+export interface PrismaWereCondition {
   OR?: Record<string, unknown>[];
   AND?: Record<string, unknown>[];
   NOT?: Record<string, unknown>[];
   [key: string]: unknown;
 }
-
 export interface IQueryResult<T> {
   data: T[];
   meta: {
