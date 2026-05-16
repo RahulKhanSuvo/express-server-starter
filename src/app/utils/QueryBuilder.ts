@@ -42,6 +42,7 @@ export class QueryBuilder<
   }
   search(): this {
     const { searchTerm } = this.queryParams;
+    console.log(this.queryParams);
     const { searchableFields } = this.config;
     if (searchTerm && searchableFields && searchableFields.length > 0) {
       const searchCondition: Record<string, unknown>[] = searchableFields.map(
