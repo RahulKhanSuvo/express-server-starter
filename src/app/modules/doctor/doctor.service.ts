@@ -5,6 +5,7 @@ import { QueryBuilder } from "../../utils/QueryBuilder";
 import { IQueryPrams } from "../../interfaces/query.interface";
 import {
   doctorFilterableFields,
+  doctorIncludeConfig,
   doctorSearchableFields,
 } from "./doctor.constant";
 import { Doctor, Prisma } from "../../../generated/prisma/client";
@@ -30,6 +31,8 @@ const getAllDoctors = async (query: IQueryPrams) => {
       user: true,
       specialties: true,
     })
+    .dynamicInclude(doctorIncludeConfig)
+    .fields()
     .execute();
   return result;
 };
