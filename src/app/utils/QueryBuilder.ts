@@ -32,8 +32,6 @@ export class QueryBuilder<
   ) {
     this.query = {
       where: {},
-      include: {},
-      select: {},
       orderBy: {},
       skip: 0,
       take: 10,
@@ -197,7 +195,7 @@ export class QueryBuilder<
     return this;
   }
   sort(): this {
-    const sortBy = this.queryParams.shortBy || "createAt";
+    const sortBy = this.queryParams.shortBy || "createdAt";
     const sortOrder = this.queryParams.sortOrder === "asc" ? "asc" : "desc";
     this.shortBy = sortBy;
     this.shortOrder = sortOrder;
@@ -257,13 +255,17 @@ export class QueryBuilder<
         this.selectField[field] = true;
       }
     });
-    this.query.select = this.selectField;
-    this.countQuery.select = this.selectField;
+
+    if (Object.keys(this.selectField).length > 0) {
+      this.query.select = this.selectField;
+      // When select is used, include must be removed
+      delete this.query.include;
+    }
 
     return this;
   }
   include(relation: TInclude): this {
-    if (this.selectField) {
+    if (this.query.select && Object.keys(this.query.select).length > 0) {
       return this;
     }
     this.query.include = {
@@ -276,7 +278,7 @@ export class QueryBuilder<
     includesConfig: Record<string, unknown>,
     defaultIncludes?: string[],
   ): this {
-    if (this.selectField) {
+    if (this.query.select && Object.keys(this.query.select).length > 0) {
       return this;
     }
     const result: Record<string, unknown> = {};

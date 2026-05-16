@@ -4,7 +4,7 @@ import { sendResponse } from "../../../shared/sendResponse";
 import { StatusCodes } from "http-status-codes";
 
 const getAllDoctors = catchAsync(async (req, res) => {
-  const result = await doctorService.getAllDoctors();
+  const result = await doctorService.getAllDoctors(req.query);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
