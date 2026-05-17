@@ -1,5 +1,13 @@
+import { DoctorSchedules, Prisma } from "../../../generated/prisma/client";
 import { IRequestUser } from "../../interfaces/error.interface";
+import { IQueryPrams } from "../../interfaces/query.interface";
 import { prisma } from "../../lib/prisma";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import {
+  doctorScheduleFilterableFields,
+  doctorScheduleIncludeConfig,
+  doctorScheduleSearchableFields,
+} from "./doctorSchedule.constant";
 import {
   TCreateMyDoctorSchedule,
   TUpdateMyDoctorSchedule,
@@ -84,60 +92,77 @@ const getAllDoctorSchedules = async (
   });
   return result;
 };
-const getDoctorScheduleById = async (
-  user: IRequestUser,
-  payload: TCreateMyDoctorSchedule,
-) => {
-  const doctorData = await prisma.doctor.findFirstOrThrow({
+const getDoctorScheduleById = async (doctorId: string, scheduleId: string) => {
+  const doctorSchedule = await prisma.doctorSchedules.findUnique({
     where: {
-      userId: user.userId,
+      doctorId_scheduleId: {
+        doctorId: doctorId,
+        scheduleId: scheduleId,
+      },
+    },
+    include: {
+      schedule: true,
+      doctor: true,
     },
   });
-  const doctorScheduleData = payload.scheduleIds.map((scheduleId) => ({
-    doctorId: doctorData.id,
-    scheduleId: scheduleId,
-  }));
-  const result = await prisma.doctorSchedules.createMany({
-    data: doctorScheduleData,
-  });
-  return result;
+  return doctorSchedule;
 };
-const deleteMyDoctorSchedule = async (
-  user: IRequestUser,
-  payload: TCreateMyDoctorSchedule,
-) => {
-  const doctorData = await prisma.doctor.findFirstOrThrow({
+const deleteMyDoctorSchedule = async (id: string, user: IRequestUser) => {
+  const doctorData = await prisma.doctor.findUniqueOrThrow({
     where: {
-      userId: user.userId,
+      email: user.email,
     },
   });
-  const doctorScheduleData = payload.scheduleIds.map((scheduleId) => ({
-    doctorId: doctorData.id,
-    scheduleId: scheduleId,
-  }));
-  const result = await prisma.doctorSchedules.createMany({
-    data: doctorScheduleData,
-  });
-  return result;
-};
-const getMyDoctorSchedules = async (
-  user: IRequestUser,
-  payload: TCreateMyDoctorSchedule,
-) => {
-  const doctorData = await prisma.doctor.findFirstOrThrow({
+
+  await prisma.doctorSchedules.deleteMany({
     where: {
-      userId: user.userId,
+      isBooked: false,
+      doctorId: doctorData.id,
+      scheduleId: id,
     },
   });
-  const doctorScheduleData = payload.scheduleIds.map((scheduleId) => ({
-    doctorId: doctorData.id,
-    scheduleId: scheduleId,
-  }));
-  const result = await prisma.doctorSchedules.createMany({
-    data: doctorScheduleData,
-  });
-  return result;
 };
+
+const getMyDoctorSchedules = async (user: IRequestUser, query: IQueryPrams) => {
+  const doctorData = await prisma.doctor.findUniqueOrThrow({
+    where: {
+      email: user.email,
+    },
+  });
+  const queryBuilder = new QueryBuilder<
+    DoctorSchedules,
+    Prisma.DoctorSchedulesWhereInput,
+    Prisma.DoctorSchedulesInclude
+  >(
+    prisma.doctorSchedules,
+    {
+      doctorId: doctorData.id,
+      ...query,
+    },
+    {
+      filterAbleFields: doctorScheduleFilterableFields,
+      searchableFields: doctorScheduleSearchableFields,
+    },
+  );
+  const doctorSchedules = await queryBuilder
+    .search()
+    .filter()
+    .paginate()
+    .include({
+      schedule: true,
+      doctor: {
+        include: {
+          user: true,
+        },
+      },
+    })
+    .sort()
+    .fields()
+    .dynamicInclude(doctorScheduleIncludeConfig)
+    .execute();
+  return doctorSchedules;
+};
+
 export const DoctorScheduleService = {
   createMyDoctorSchedule,
   getAllDoctorSchedules,
