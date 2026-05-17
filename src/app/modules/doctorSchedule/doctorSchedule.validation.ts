@@ -3,9 +3,17 @@ import { z } from "zod";
 const createMyDoctorScheduleSchema = z.object({
   scheduleIds: z.array(z.string()),
 });
-const upDataMyDoctorScheduleSchema = z.object({
-  scheduleIds: z.array(z.string()).optional(),
+const updateDoctorScheduleSchema = z.object({
+  scheduleIds: z.array(
+    z.object({
+      shouldDelete: z.boolean(),
+      id: z.string(),
+    }),
+  ),
 });
+export type TUpdateMyDoctorSchedule = z.infer<
+  typeof updateDoctorScheduleSchema
+>;
 const deleteMyDoctorScheduleSchema = z.object({
   scheduleIds: z.array(
     z.object({
@@ -17,11 +25,8 @@ const deleteMyDoctorScheduleSchema = z.object({
 export type TCreateMyDoctorSchedule = z.infer<
   typeof createMyDoctorScheduleSchema
 >;
-export type TUpDataMyDoctorSchedule = z.infer<
-  typeof upDataMyDoctorScheduleSchema
->;
 export const DoctorScheduleInterface = {
   createMyDoctorScheduleSchema,
-  upDataMyDoctorScheduleSchema,
+  updateDoctorScheduleSchema,
   deleteMyDoctorScheduleSchema,
 };

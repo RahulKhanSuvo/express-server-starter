@@ -1,6 +1,9 @@
 import { IRequestUser } from "../../interfaces/error.interface";
 import { prisma } from "../../lib/prisma";
-import { TCreateMyDoctorSchedule } from "./doctorSchedule.validation";
+import {
+  TCreateMyDoctorSchedule,
+  TUpdateMyDoctorSchedule,
+} from "./doctorSchedule.validation";
 
 const createMyDoctorSchedule = async (
   user: IRequestUser,
@@ -22,20 +25,45 @@ const createMyDoctorSchedule = async (
 };
 const updateMyDoctorSchedule = async (
   user: IRequestUser,
-  payload: TCreateMyDoctorSchedule,
+  payload: TUpdateMyDoctorSchedule,
 ) => {
-  const doctorData = await prisma.doctor.findFirstOrThrow({
+  const doctorData = await prisma.doctor.findUniqueOrThrow({
     where: {
-      userId: user.userId,
+      email: user.email,
     },
   });
-  const doctorScheduleData = payload.scheduleIds.map((scheduleId) => ({
-    doctorId: doctorData.id,
-    scheduleId: scheduleId,
-  }));
-  const result = await prisma.doctorSchedules.createMany({
-    data: doctorScheduleData,
+
+  const deleteIds = payload.scheduleIds
+    .filter((schedule) => schedule.shouldDelete)
+    .map((schedule) => schedule.id);
+
+  const createIds = payload.scheduleIds
+    .filter((schedule) => !schedule.shouldDelete)
+    .map((schedule) => schedule.id);
+
+  const result = await prisma.$transaction(async (tx) => {
+    await tx.doctorSchedules.deleteMany({
+      where: {
+        isBooked: false,
+        doctorId: doctorData.id,
+        scheduleId: {
+          in: deleteIds,
+        },
+      },
+    });
+
+    const doctorScheduleData = createIds.map((scheduleId) => ({
+      doctorId: doctorData.id,
+      scheduleId,
+    }));
+
+    const result = await tx.doctorSchedules.createMany({
+      data: doctorScheduleData,
+    });
+
+    return result;
   });
+
   return result;
 };
 const getAllDoctorSchedules = async (
