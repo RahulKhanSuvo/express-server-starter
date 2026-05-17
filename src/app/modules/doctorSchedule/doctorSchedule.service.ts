@@ -20,9 +20,9 @@ const createMyDoctorSchedule = async (
   });
   return result;
 };
+const updateMyDoctorSchedule = () => {};
 const getAllDoctorSchedules = () => {};
 const getDoctorScheduleById = () => {};
-const updateMyDoctorSchedule = () => {};
 const deleteMyDoctorSchedule = () => {};
 const getMyDoctorSchedules = () => {};
 export const DoctorScheduleService = {
