@@ -104,6 +104,7 @@ export class QueryBuilder<
       "shortOrder",
       "select",
       "includes",
+      "fields",
     ];
     const filterParams: Record<string, unknown> = {};
     Object.keys(this.queryParams).forEach((key) => {
