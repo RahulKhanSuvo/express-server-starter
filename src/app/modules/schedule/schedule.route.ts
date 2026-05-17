@@ -8,8 +8,8 @@ import { validateRequest } from "../../middleware/validateRequest";
 const routes = Router();
 routes.post(
   "/",
-  validateRequest(ScheduleInterface.createScheduleSchema),
   AuthGard(Role.ADMIN, Role.DOCTOR, Role.PATIENT),
+  validateRequest(ScheduleInterface.createScheduleSchema),
   ScheduleController.getAllSchedule,
 );
 export const ScheduleRoutes = routes;
