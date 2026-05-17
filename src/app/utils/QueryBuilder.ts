@@ -100,6 +100,8 @@ export class QueryBuilder<
       "limit",
       "sortBy",
       "sortOrder",
+      "shortBy",
+      "shortOrder",
       "select",
       "includes",
     ];
@@ -123,6 +125,19 @@ export class QueryBuilder<
       if (!isAllowedField) {
         return;
       }
+      let parsedValue: unknown;
+      if (
+        typeof value === "object" &&
+        value !== null &&
+        !Array.isArray(value)
+      ) {
+        parsedValue = this.parseRangeFilter(
+          value as Record<string, string | number>,
+        );
+      } else {
+        parsedValue = this.parseFilterValue(value);
+      }
+
       if (key.includes(".")) {
         const parts = key.split(".");
         if (filterAbleFields && !filterAbleFields.includes(key)) {
@@ -134,54 +149,48 @@ export class QueryBuilder<
             queryWhere[relation] = {};
             countWhere[relation] = {};
           }
-          queryWhere[relation] = {
-            [fieldName]: this.parseFilterValue(value),
-          };
-          countWhere[relation] = {
-            [fieldName]: this.parseFilterValue(value),
-          };
+          const relQueryWhere = queryWhere[relation] as Record<string, unknown>;
+          relQueryWhere[fieldName] = parsedValue;
+
+          const relCountWhere = countWhere[relation] as Record<string, unknown>;
+          relCountWhere[fieldName] = parsedValue;
         }
         if (parts.length == 3) {
           const [relation1, relation2, fieldName] = parts;
           if (!queryWhere[relation1]) {
-            queryWhere[relation1] = {};
-            countWhere[relation1] = {};
+            queryWhere[relation1] = { some: {} };
+            countWhere[relation1] = { some: {} };
           }
-          queryWhere[relation1] = {
-            some: {
-              [relation2]: {
-                [fieldName]: this.parseFilterValue(value),
-              },
-            },
-          };
-          countWhere[relation1] = {
-            some: {
-              [relation2]: {
-                [fieldName]: this.parseFilterValue(value),
-              },
-            },
-          };
+          const rel1QueryWhere = queryWhere[relation1] as Record<
+            string,
+            unknown
+          >;
+          if (!rel1QueryWhere.some) rel1QueryWhere.some = {};
+          const someQueryWhere = rel1QueryWhere.some as Record<string, unknown>;
+          if (!someQueryWhere[relation2]) someQueryWhere[relation2] = {};
+          const rel2QueryWhere = someQueryWhere[relation2] as Record<
+            string,
+            unknown
+          >;
+          rel2QueryWhere[fieldName] = parsedValue;
+
+          const rel1CountWhere = countWhere[relation1] as Record<
+            string,
+            unknown
+          >;
+          if (!rel1CountWhere.some) rel1CountWhere.some = {};
+          const someCountWhere = rel1CountWhere.some as Record<string, unknown>;
+          if (!someCountWhere[relation2]) someCountWhere[relation2] = {};
+          const rel2CountWhere = someCountWhere[relation2] as Record<
+            string,
+            unknown
+          >;
+          rel2CountWhere[fieldName] = parsedValue;
         }
       } else {
-        queryWhere[key] = this.parseFilterValue(value);
-        countWhere[key] = this.parseFilterValue(value);
-        return;
+        queryWhere[key] = parsedValue;
+        countWhere[key] = parsedValue;
       }
-      if (
-        typeof value === "object" &&
-        value !== null &&
-        !Array.isArray(value)
-      ) {
-        queryWhere[key] = this.parseRangeFilter(
-          value as Record<string, string | number>,
-        );
-        countWhere[key] = this.parseRangeFilter(
-          value as Record<string, string | number>,
-        );
-        return;
-      }
-      queryWhere[key] = this.parseFilterValue(value);
-      countWhere[key] = this.parseFilterValue(value);
     });
     return this;
   }
@@ -196,8 +205,13 @@ export class QueryBuilder<
     return this;
   }
   sort(): this {
-    const sortBy = this.queryParams.shortBy || "createdAt";
-    const sortOrder = this.queryParams.sortOrder === "asc" ? "asc" : "desc";
+    const sortBy =
+      (this.queryParams.shortBy as string) ||
+      (this.queryParams.sortBy as string) ||
+      "createdAt";
+    const sortOrderRaw =
+      this.queryParams.shortOrder || this.queryParams.sortOrder;
+    const sortOrder = sortOrderRaw === "asc" ? "asc" : "desc";
     this.shortBy = sortBy;
     this.shortOrder = sortOrder;
     console.log(this.shortOrder);
