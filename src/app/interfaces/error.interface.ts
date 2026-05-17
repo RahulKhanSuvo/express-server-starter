@@ -10,3 +10,10 @@ export interface TErrorResponse {
   error?: string | null;
   stack?: string | null;
 }
+import { Role } from "../../generated/prisma/enums";
+
+export interface IRequestUser {
+  userId: string;
+  role: Role;
+  email: string;
+}
