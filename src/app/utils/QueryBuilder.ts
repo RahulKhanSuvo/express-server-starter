@@ -200,6 +200,7 @@ export class QueryBuilder<
     const sortOrder = this.queryParams.sortOrder === "asc" ? "asc" : "desc";
     this.shortBy = sortBy;
     this.shortOrder = sortOrder;
+    console.log(this.shortOrder);
     // doctor?sortBy=user.name&shortOrder=asc =>
     // ["user", "name"] => { user: { name: "asc" } }
     const parts = sortBy.split(".");
