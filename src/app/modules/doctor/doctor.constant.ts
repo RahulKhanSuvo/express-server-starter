@@ -1,7 +1,15 @@
 import { Prisma } from "../../../generated/prisma/client";
 
 export const doctorSearchableFields = ["name", "email"];
-export const doctorFilterableFields = ["name", "email", "gender"];
+export const doctorFilterableFields = [
+  "name",
+  "email",
+  "gender",
+  "experience",
+  "appointmentFee",
+  "qualification",
+  "designation",
+];
 export const doctorIncludeConfig: Partial<
   Record<
     keyof Prisma.DoctorInclude,
