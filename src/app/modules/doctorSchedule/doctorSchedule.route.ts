@@ -22,7 +22,7 @@ router.patch(
 );
 
 router.delete(
-  "/delete-my-doctor-schedule",
+  "/delete-my-doctor-schedule/:id",
   AuthGard(Role.DOCTOR),
   validateRequest(DoctorScheduleInterface.deleteMyDoctorScheduleSchema),
   DoctorScheduleController.deleteMyDoctorSchedule,
