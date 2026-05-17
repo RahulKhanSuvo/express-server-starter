@@ -19,7 +19,20 @@ const createMyDoctorSchedule = catchAsync(
     });
   },
 );
-const updateMyDoctorSchedule = () => {};
+const updateMyDoctorSchedule = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await DoctorScheduleService.updateMyDoctorSchedule(
+      req.user as IRequestUser,
+      req.body,
+    );
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Doctor schedule updated successfully",
+      data: result,
+    });
+  },
+);
 const getAllDoctorSchedules = () => {};
 const getDoctorScheduleById = () => {};
 const deleteMyDoctorSchedule = () => {};
