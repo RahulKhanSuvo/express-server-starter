@@ -5,7 +5,7 @@ import { ICreateScheduleType } from "./schedule.interface";
 import { addHours, addMinutes, format } from "date-fns";
 import { covertDataTime } from "./schedule.utils";
 
-const getAllSchedule = async (payload: ICreateScheduleType) => {
+const createSchedule = async (payload: ICreateScheduleType) => {
   const { startDate, endDate, startTime, endTime } = payload;
   const interval = 30;
   const currentData = new Date(startDate);
@@ -65,6 +65,6 @@ const getScheduleById = async (id: string) => {
   return result;
 };
 export const scheduleService = {
-  getAllSchedule,
+  createSchedule,
   getScheduleById,
 };

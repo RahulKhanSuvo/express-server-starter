@@ -10,6 +10,6 @@ routes.post(
   "/",
   AuthGard(Role.ADMIN, Role.DOCTOR, Role.PATIENT),
   validateRequest(ScheduleInterface.createScheduleSchema),
-  ScheduleController.getAllSchedule,
+  ScheduleController.createSchedule,
 );
 export const ScheduleRoutes = routes;
