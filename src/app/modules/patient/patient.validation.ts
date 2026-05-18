@@ -35,8 +35,14 @@ const updatePatientData = z.object({
   recentDepression: z.boolean().default(false),
   maritalStatus: z.string().optional(),
 });
+const patientMedicalReport = z.object({
+  reportName: z.string(),
+  reportLink: z.string(),
+  shouldDelete: z.boolean(),
+});
 
 export const PatientValidation = {
   updatePatient,
   updatePatientData,
+  patientMedicalReport,
 };
