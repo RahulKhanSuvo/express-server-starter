@@ -9,3 +9,6 @@ export type IUpdatePatientDataPayload = z.infer<
 export type IPatientMedicalReportPayload = z.infer<
   typeof PatientValidation.patientMedicalReport
 >;
+export type IUpdatePatientProfilePayload = z.infer<
+  typeof PatientValidation.updatePatientProfileSchema
+>;
