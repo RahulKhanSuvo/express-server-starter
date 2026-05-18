@@ -82,15 +82,31 @@ export const auth = betterAuth({
           if (!user) {
             throw new Error("User not found");
           }
-          await EmailUtils.sendEmail({
-            to: email,
-            subject: "Email Verification",
-            templateName: "otp",
-            templateData: {
-              name: user.name,
-              otp,
-            },
-          });
+          if (user && user.role === Role.SUPER_ADMIN) {
+            // auto verify super admin
+            console.log("Super admin email verification");
+            // user.emailVerified = true;
+            // return;
+            await prisma.user.update({
+              where: {
+                email,
+              },
+              data: {
+                emailVerified: true,
+              },
+            });
+          }
+          if (user && !user.emailVerified) {
+            await EmailUtils.sendEmail({
+              to: email,
+              subject: "Email Verification",
+              templateName: "otp",
+              templateData: {
+                name: user.name,
+                otp,
+              },
+            });
+          }
         } else if (type === "forget-password") {
           const user = await prisma.user.findUnique({
             where: {

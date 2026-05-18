@@ -10,11 +10,14 @@ import { auth } from "./app/lib/auth";
 import path from "node:path";
 import cors from "cors";
 import qs from "qs";
+import cron from "node-cron";
 import { PaymentController } from "./app/modules/payment/payment.controller";
+import { AppointmentService } from "./app/modules/appointment/appointment.service";
 const app: Application = express();
 app.set("query parser", (str: string) => qs.parse(str));
 app.set("view engine", "ejs");
 app.set("views", path.resolve(process.cwd(), "src/app/templates"));
+
 app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
@@ -34,6 +37,14 @@ app.use("/api/auth", toNodeHandler(auth));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+cron.schedule("0 1 * * *", async () => {
+  try {
+    console.log("Running cron job");
+    await AppointmentService.cancelUnpaidAppointments();
+  } catch (error) {
+    console.error("Cron job failed", error);
+  }
+});
 // ---------------------------------
 if (envConfig.NODE_ENV === "development") {
   app.use(morgan("dev"));
