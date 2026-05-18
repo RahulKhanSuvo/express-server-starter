@@ -4,3 +4,6 @@ import { PatientValidation } from "./patient.validation";
 export type IUpdatePatientInfoPayload = z.infer<
   typeof PatientValidation.updatePatient
 >;
+export type IUpdatePatientDataPayload = z.infer<
+  typeof PatientValidation.updatePatientData
+>;
