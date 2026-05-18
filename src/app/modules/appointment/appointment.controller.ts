@@ -84,7 +84,7 @@ const initiatePayment = catchAsync(async (req, res) => {
   const user = req.user;
   const paymentInfo = await AppointmentService.initiatePayment(
     appointmentId as string,
-    user,
+    user!,
   );
 
   sendResponse(res, {
