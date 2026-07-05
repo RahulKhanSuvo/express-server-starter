@@ -45,7 +45,7 @@ const setRefreshTokenOnCookie = (res: Response, token: string) => {
   });
 };
 const setBatterAuthSessionOnCookie = (res: Response, token: string) => {
-  CookieUtils.setACookie(res, "batter_auth_session_token", token, {
+  CookieUtils.setACookie(res, "better-auth.session_token", token, {
     httpOnly: true,
     secure: envConfig.NODE_ENV === "production",
     sameSite: envConfig.NODE_ENV === "production" ? "none" : "lax",

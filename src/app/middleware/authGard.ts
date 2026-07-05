@@ -13,7 +13,7 @@ export const AuthGard =
     try {
       const sessionToken = CookieUtils.getACookie(
         req,
-        "batter_auth_session_token",
+        "better-auth.session_token",
       );
       if (!sessionToken) {
         throw new AppError(

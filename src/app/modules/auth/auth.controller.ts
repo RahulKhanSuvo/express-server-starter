@@ -18,11 +18,7 @@ const registerPatient = catchAsync(async (req, res) => {
     statusCode: httpStatus.CREATED,
     success: true,
     message: "Patient registered successfully",
-    data: {
-      accessToken,
-      refreshToken,
-      data,
-    },
+    data: data,
   });
 });
 
@@ -36,11 +32,7 @@ const loginUser = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "User logged in successfully",
-    data: {
-      accessToken,
-      refreshToken,
-      data,
-    },
+    data: data,
   });
 });
 const getMe = catchAsync(async (req, res) => {
@@ -78,7 +70,7 @@ const newToken = catchAsync(async (req, res) => {
   });
 });
 const changePassword = catchAsync(async (req, res) => {
-  const sessionToken = req.cookies.batter_auth_session_token;
+  const sessionToken = req.cookies["better-auth.session_token"];
   if (!sessionToken)
     throw new AppError(status.BAD_REQUEST, "Session token is required");
   const result = await AuthService.changePassword(req.body, sessionToken);
@@ -97,13 +89,13 @@ const changePassword = catchAsync(async (req, res) => {
   });
 });
 const logoutUser = catchAsync(async (req, res) => {
-  const sessionToken = req.cookies.batter_auth_session_token;
+  const sessionToken = req.cookies["better-auth.session_token"];
   if (!sessionToken)
     throw new AppError(status.BAD_REQUEST, "Session token is required");
   const result = await AuthService.logoutUser(sessionToken);
   CookieUtils.deleteACookie(res, "accessToken");
   CookieUtils.deleteACookie(res, "refreshToken");
-  CookieUtils.deleteACookie(res, "batter_auth_session_token");
+  CookieUtils.deleteACookie(res, "better-auth.session_token");
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
