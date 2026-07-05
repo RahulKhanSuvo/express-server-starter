@@ -15,6 +15,7 @@ export const AuthGard =
         req,
         "better-auth.session_token",
       );
+      console.log("sessionToken", sessionToken);
       if (!sessionToken) {
         throw new AppError(
           status.UNAUTHORIZED,

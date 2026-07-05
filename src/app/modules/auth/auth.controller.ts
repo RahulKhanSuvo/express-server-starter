@@ -47,7 +47,7 @@ const getMe = catchAsync(async (req, res) => {
 
 const newToken = catchAsync(async (req, res) => {
   const oldRefreshToken = req.cookies.refreshToken;
-  const oldSessionToken = req.cookies.batter_auth_session_token;
+  const oldSessionToken = req.cookies["better-auth.session_token"];
   if (!oldRefreshToken || !oldSessionToken)
     throw new AppError(
       status.BAD_REQUEST,
